@@ -31,6 +31,3 @@ app.listen(PUERTO, () => {
 
 const db = require('./modelos/db');
 
-db.getConnection()
-    .then(() => console.log('base de datos conectada'))
-    .catch(err => console.error('error al conectar:', err));
