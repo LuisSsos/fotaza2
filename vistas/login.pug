@@ -1,0 +1,14 @@
+html
+  head
+    title Login - Fotaza 2
+  body
+    h1 Iniciar sesion
+    if error
+      p= error
+    form(method='POST' action='/auth/login')
+      input(type='email' name='correo' placeholder='Correo')
+      br
+      input(type='password' name='contrasena' placeholder='Contrasena')
+      br
+      button(type='submit') Entrar
+    a(href='/auth/registro') Registrarse

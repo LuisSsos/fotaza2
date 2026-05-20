@@ -1,6 +1,7 @@
 const express = require('express');
 const session = require('express-session');
 const path = require('path');
+const rutasAuth = require('./rutas/auth')
 require('dotenv').config();
 
 const app = express();
@@ -19,6 +20,8 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
 }));
+
+app.use('/auth',rutasAuth);
 
 app.get('/', (req, res) => {
     res.send('¡fotaza 2 funcionando');
