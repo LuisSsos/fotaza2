@@ -30,12 +30,6 @@ router.get('/login', soloInvitados,(req,res) =>{
     res.render('login');
 });
 
-function verificarSesion(req, res, next) {
-    if (!req.session || !req.session.usuario) {
-        return res.redirect('/auth/login');
-    }
-    next();
-}
 
 router.post('/login', async (req,res) =>{
     const { correo, contrasena } = req.body;
