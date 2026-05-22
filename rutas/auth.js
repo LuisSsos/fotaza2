@@ -2,8 +2,11 @@ const express = require ('express');
 const bcrypt = require ('bcrypt');
 const router = express.Router();
 const usuario = require('../modelos/usuario');
+const { soloInvitados} = require ('../middlewares/auth')
 
-router.get('/registro',(req,res) => {
+
+
+router.get('/registro',soloInvitados,(req,res) => {
     res.render('registro');
 })
 
@@ -23,9 +26,16 @@ router.post('/registro',async (req,res) =>{
     }
 });
 
-router.get('/login', (req,res) =>{
+router.get('/login', soloInvitados,(req,res) =>{
     res.render('login');
 });
+
+function verificarSesion(req, res, next) {
+    if (!req.session || !req.session.usuario) {
+        return res.redirect('/auth/login');
+    }
+    next();
+}
 
 router.post('/login', async (req,res) =>{
     const { correo, contrasena } = req.body;
@@ -39,7 +49,9 @@ router.post('/login', async (req,res) =>{
             return res.render ('login', {error: ' Correo o contrasena incorrectos'});
         }
         req.session.usuario = { id: user.id, nombre_usuario: user.nombre_usuario, rol: user.rol};
-        res.redirect('/')
+        req.session.save(() => {
+        res.redirect('/');
+});
     }catch (err){
         console.error (err);
         res.render('login', { error: 'Error al iniciar sesion'});
