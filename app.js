@@ -3,6 +3,7 @@ const session = require('express-session');
 const path = require('path');
 const rutasAuth = require('./rutas/auth');
 const usuarioModelo = require('./modelos/usuario');
+const rutasPublicaciones = require('./rutas/publicaciones');
 require('dotenv').config();
 
 const app = express();
@@ -24,6 +25,7 @@ app.use(session({
 const { verificarSesion } = require('./middlewares/auth');
 
 app.use('/auth', rutasAuth);
+app.use('/publicaciones', rutasPublicaciones);
 
 app.get('/', verificarSesion, (req, res) => {
     res.render('home', { usuario: req.session.usuario });

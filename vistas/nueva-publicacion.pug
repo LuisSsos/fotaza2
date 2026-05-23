@@ -1,0 +1,14 @@
+html
+  head
+    title Nueva publicacion - Fotaza 2
+  body
+    h1 Nueva publicacion
+    if error
+      p= error
+    form(method='POST' action='/publicaciones/nueva')
+      input(type='text' name='titulo' placeholder='Titulo')
+      br
+      textarea(name='descripcion' placeholder='Descripcion (opcional)')
+      br
+      button(type='submit') Publicar
+    a(href='/') Volver
