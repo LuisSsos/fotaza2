@@ -1,10 +1,12 @@
 const express = require('express');
 const session = require('express-session');
 const path = require('path');
-const rutasAuth = require('./rutas/auth');
-const usuarioModelo = require('./modelos/usuario');
-const rutasPublicaciones = require('./rutas/publicaciones');
 require('dotenv').config();
+
+const rutasAuth = require('./rutas/auth');
+const rutasPublicaciones = require('./rutas/publicaciones');
+const usuarioModelo = require('./modelos/usuario');
+const publicacionModelo = require('./modelos/publicacion');
 
 const app = express();
 
@@ -27,8 +29,9 @@ const { verificarSesion } = require('./middlewares/auth');
 app.use('/auth', rutasAuth);
 app.use('/publicaciones', rutasPublicaciones);
 
-app.get('/', verificarSesion, (req, res) => {
-    res.render('home', { usuario: req.session.usuario });
+app.get('/', verificarSesion, async (req, res) => {
+    const publicaciones = await publicacionModelo.obtenerTodas();
+    res.render('home', { usuario: req.session.usuario, publicaciones });
 });
 
 app.get('/perfil', verificarSesion, async (req, res) => {

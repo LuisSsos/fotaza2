@@ -3,4 +3,16 @@ html
     title Fotaza 2
   body
     h1 Bienvenido #{usuario.nombre_usuario}
+    a(href='/publicaciones/nueva') Nueva publicacion
+    |  | 
+    a(href='/perfil') Mi perfil
+    |  | 
     a(href='/auth/logout') Cerrar sesion
+    hr
+    each pub in publicaciones
+      div
+        h3 #{pub.titulo}
+        p por #{pub.nombre_usuario}
+        p #{pub.fecha_publicacion}
+        a(href='/publicaciones/' + pub.id) Ver
+        hr
