@@ -30,4 +30,19 @@ async function obtenerPorId(id) {
     return filas[0];
 }
 
-module.exports = { crear, obtenerTodas, obtenerPorId };
+async function agregarImagen(datos) {
+    const [resultado] = await db.query(
+        'INSERT INTO imagenes (id_publicacion, nombre_archivo,licencia) VALUES (?,?,?)',
+        [datos.id_publicacion,datos.nombre_archivo,datos.licencia]
+    );
+    return resultado.insertId;
+}
+async function obtenerImagenes(id_publicacion) {
+    const [filas] = await db.query(
+        'SELECT * FROM imagenes WHERE id_publicacion = ?',
+        [id_publicacion]
+    );
+    return filas;
+}
+
+module.exports = { crear, obtenerTodas, obtenerPorId, agregarImagen,obtenerImagenes};

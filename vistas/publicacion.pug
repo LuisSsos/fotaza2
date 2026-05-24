@@ -1,0 +1,12 @@
+html
+  head
+    title #{publicacion.titulo} - Fotaza 2
+  body
+    h2 #{publicacion.titulo}
+    p por #{publicacion.nombre_usuario}
+    if publicacion.descripcion
+      p #{publicacion.descripcion}
+    each imagen in imagenes
+      img(src='/imagenes/' + imagen.nombre_archivo style='max-width: 500px')
+      br
+    a(href='/') Volver
