@@ -9,4 +9,15 @@ html
     each imagen in imagenes
       img(src='/imagenes/' + imagen.nombre_archivo style='max-width: 500px')
       br
+    hr
+    h3 Comentarios
+    each com in comentarios
+      div
+        p #{com.nombre_usuario}: #{com.contenido}
+        p #{com.fecha}
+        hr
+    form(method='POST' action='/publicaciones/' + publicacion.id + '/comentar')
+      textarea(name='contenido' placeholder='Escribi un comentario')
+      br
+      button(type='submit') Comentar
     a(href='/') Volver

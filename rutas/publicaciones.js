@@ -3,7 +3,7 @@ const router = express.Router();
 const publicacion = require('../modelos/publicacion');
 const {verificarSesion} = require('../middlewares/auth')
 const subida = require('../config/multer');
-
+const comentario = require('../modelos/comentario')
 router.get('/nueva', verificarSesion, (req,res) => {
     res.render('nueva-publicacion');
 })
@@ -36,12 +36,27 @@ router.post('/nueva', verificarSesion,subida.array('imagenes',10),async (req,res
     }
 });
 
+router.post('/:id/comentar', verificarSesion, async (req,res) =>{
+    try{
+        await comentario.crear ({
+            id_publicacion: req.params.id,
+            id_autor: req.session.usuario.id,
+            contenido: req.body.contenido
+        });
+res.redirect('/publicaciones/' + req.params.id);
+    } catch (err){
+        console.error(err);
+        res.redirect('/publicaciones/' + req.params.id)
+    }
+});
+
 router.get('/:id', verificarSesion, async (req, res) => {
     try {
         const pub = await publicacion.obtenerPorId(req.params.id);
         if (!pub) return res.redirect('/');
         const imagenes = await publicacion.obtenerImagenes(req.params.id);
-        res.render('publicacion', { publicacion: pub, imagenes });
+        const comentarios = await comentario.obtenerPorPublicacion(req.params.id)
+        res.render('publicacion', { publicacion: pub, imagenes,comentarios });
     } catch (err) {
         console.error(err);
         res.redirect('/');
