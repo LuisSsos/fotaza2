@@ -7,8 +7,17 @@ html
     if publicacion.descripcion
       p #{publicacion.descripcion}
     each imagen in imagenes
+      p Valoracion: #{imagen.promedio} (#{imagen.total_votos} votos)
       img(src='/imagenes/' + imagen.nombre_archivo style='max-width: 500px')
       br
+      form(method='POST' action='/publicaciones/' + publicacion.id + '/imagen/' + imagen.id + '/valorar')
+        select(name='valor')
+          option(value='1') 1
+          option(value='2') 2
+          option(value='3') 3
+          option(value='4') 4
+          option(value='5') 5
+        button(type='submit') Valorar
     hr
     h3 Comentarios
     each com in comentarios

@@ -4,6 +4,8 @@ const publicacion = require('../modelos/publicacion');
 const {verificarSesion} = require('../middlewares/auth')
 const subida = require('../config/multer');
 const comentario = require('../modelos/comentario')
+const valoracion = require('../modelos/valoracion');
+
 router.get('/nueva', verificarSesion, (req,res) => {
     res.render('nueva-publicacion');
 })
@@ -50,12 +52,40 @@ res.redirect('/publicaciones/' + req.params.id);
     }
 });
 
+router.post('/:id/imagen/:id_imagen/valorar', verificarSesion, async (req, res) => {
+    try {
+        console.log('valorando imagen:', req.params.id_imagen, 'usuario:', req.session.usuario.id, 'valor:', req.body.valor);
+        const ya = await valoracion.yaValoro(req.params.id_imagen, req.session.usuario.id);
+    if (ya) return res.redirect ('/publicaciones/' + req.params.id);
+const pub = await publicacion.obtenerPorId(req.params.id);
+if (pub.id_autor === parseInt(req.session.usuario.id)) return res.redirect('/publicaciones/' + req.params.id);
+
+await valoracion.valorar({
+    id_imagen: req.params.id_imagen,
+    id_usuario: req.session.usuario.id,
+    valor: req.body.valor
+});
+ res.redirect('/publicaciones/' + req.params.id);
+    } catch (err) {
+        console.error(err);
+        res.redirect('/publicaciones/' + req.params.id);
+    }
+});
+
+
 router.get('/:id', verificarSesion, async (req, res) => {
     try {
         const pub = await publicacion.obtenerPorId(req.params.id);
         if (!pub) return res.redirect('/');
         const imagenes = await publicacion.obtenerImagenes(req.params.id);
         const comentarios = await comentario.obtenerPorPublicacion(req.params.id)
+
+        for (const img of imagenes) {
+            const val = await valoracion.obtenerPromedio(img.id);
+            img.promedio = val.promedio ? parseFloat(val.promedio).toFixed(1) : 'Sin valoraciones';
+            img.total_votos = val.total;
+        }
+
         res.render('publicacion', { publicacion: pub, imagenes,comentarios });
     } catch (err) {
         console.error(err);
