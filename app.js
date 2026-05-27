@@ -7,7 +7,7 @@ const rutasAuth = require('./rutas/auth');
 const rutasPublicaciones = require('./rutas/publicaciones');
 const usuarioModelo = require('./modelos/usuario');
 const publicacionModelo = require('./modelos/publicacion');
-
+const rutasUsuarios = require('./rutas/usuarios')
 const app = express();
 
 app.set('view engine', 'pug');
@@ -28,7 +28,7 @@ const { verificarSesion } = require('./middlewares/auth');
 
 app.use('/auth', rutasAuth);
 app.use('/publicaciones', rutasPublicaciones);
-
+app.use('/usuarios', rutasUsuarios);
 app.get('/', verificarSesion, async (req, res) => {
     const publicaciones = await publicacionModelo.obtenerTodas();
     res.render('home', { usuario: req.session.usuario, publicaciones });

@@ -1,0 +1,11 @@
+html
+  head
+    title #{user.nombre_usuario} - Fotaza 2
+  body
+    h1 #{user.nombre_usuario}
+    p Seguidores: #{seguidores}
+    p Siguiendo: #{seguidos}
+    if usuarioActual.id !== user.id
+      form(method='POST' action='/usuarios/' + user.id + '/seguir')
+        button(type='submit')= estaSig ? 'Dejar de seguir' : 'Seguir'
+    a(href='/') Volver
