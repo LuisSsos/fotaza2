@@ -18,7 +18,7 @@ return filas[0]
 
 async function yaValoro(id_imagen,id_usuario) {
     const [filas] = await db.query(
-        'SELECT id FROM valoraciones WHERE id_imagen = ?, AND id_usuario = ?',
+        'SELECT id FROM valoraciones WHERE id_imagen = ? AND id_usuario = ?',
         [id_imagen, id_usuario]
     );
     return filas.length>0;

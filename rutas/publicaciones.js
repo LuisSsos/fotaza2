@@ -54,18 +54,18 @@ res.redirect('/publicaciones/' + req.params.id);
 
 router.post('/:id/imagen/:id_imagen/valorar', verificarSesion, async (req, res) => {
     try {
-        console.log('valorando imagen:', req.params.id_imagen, 'usuario:', req.session.usuario.id, 'valor:', req.body.valor);
         const ya = await valoracion.yaValoro(req.params.id_imagen, req.session.usuario.id);
-    if (ya) return res.redirect ('/publicaciones/' + req.params.id);
-const pub = await publicacion.obtenerPorId(req.params.id);
-if (pub.id_autor === parseInt(req.session.usuario.id)) return res.redirect('/publicaciones/' + req.params.id);
-
-await valoracion.valorar({
-    id_imagen: req.params.id_imagen,
-    id_usuario: req.session.usuario.id,
-    valor: req.body.valor
-});
- res.redirect('/publicaciones/' + req.params.id);
+        console.log('ya valoro:', ya);
+        const pub = await publicacion.obtenerPorId(req.params.id);
+        console.log('autor pub:', pub.id_autor, 'usuario sesion:', req.session.usuario.id);
+        if (ya) return res.redirect('/publicaciones/' + req.params.id);
+        if (pub.id_autor === parseInt(req.session.usuario.id)) return res.redirect('/publicaciones/' + req.params.id);
+        await valoracion.valorar({
+            id_imagen: req.params.id_imagen,
+            id_usuario: req.session.usuario.id,
+            valor: req.body.valor
+        });
+        res.redirect('/publicaciones/' + req.params.id);
     } catch (err) {
         console.error(err);
         res.redirect('/publicaciones/' + req.params.id);

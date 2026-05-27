@@ -10,7 +10,7 @@ html
       p Valoracion: #{imagen.promedio} (#{imagen.total_votos} votos)
       img(src='/imagenes/' + imagen.nombre_archivo style='max-width: 500px')
       br
-      form(method='POST' action='/publicaciones/' + publicacion.id + '/imagen/' + imagen.id + '/valorar')
+      form(method='POST' action=`/publicaciones/${publicacion.id}/imagen/${imagen.id}/valorar`)
         select(name='valor')
           option(value='1') 1
           option(value='2') 2
