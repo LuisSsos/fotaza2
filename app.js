@@ -39,6 +39,11 @@ app.get('/perfil', verificarSesion, async (req, res) => {
     res.render('perfil', { usuario: user });
 });
 
+app.get('/buscar', verificarSesion, async (req,res) => {
+    const termino = req.query.q || '';
+    const resultados = termino ? await publicacionModelo.buscar(termino): [];
+    res.render('buscar', { resultados,termino})
+})
 const PUERTO = process.env.PUERTO || 3000;
 app.listen(PUERTO, () => {
     console.log(`Servidor andando en http://localhost:${PUERTO}`);

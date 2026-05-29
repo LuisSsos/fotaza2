@@ -1,0 +1,19 @@
+html
+  head
+    title Buscar - Fotaza 2
+  body
+    h1 Buscar
+    form(method='GET' action='/buscar')
+      input(type='text' name='q' value=termino placeholder='Buscar publicaciones...')
+      button(type='submit') Buscar
+    if termino
+      h3 Resultados para: #{termino}
+      if resultados.length === 0
+        p No se encontraron publicaciones
+      each pub in resultados
+        div
+          h4 #{pub.titulo}
+          p por #{pub.nombre_usuario}
+          a(href='/publicaciones/' + pub.id) Ver
+          hr
+    a(href='/') Volver

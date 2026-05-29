@@ -45,4 +45,17 @@ async function obtenerImagenes(id_publicacion) {
     return filas;
 }
 
-module.exports = { crear, obtenerTodas, obtenerPorId, agregarImagen,obtenerImagenes};
+async function buscar(termino) {
+    const [filas] = await db.query(
+        `SELECT p.*, u.nombre_usuario 
+        FROM publicaciones p 
+         JOIN usuarios u ON p.id_autor = u.id 
+         WHERE p.estado = 'activa' 
+         AND (p.titulo LIKE ? OR p.descripcion LIKE ?)
+         ORDER BY p.fecha_publicacion DESC`,
+        [`%${termino}%`, `%${termino}%`]
+    );
+    return filas;
+}
+
+module.exports = { crear, obtenerTodas, obtenerPorId, agregarImagen,obtenerImagenes,buscar};
