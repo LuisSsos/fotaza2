@@ -1,14 +1,15 @@
-html
-  head
-    title Login - Fotaza 2
-  body
-    h1 Iniciar sesion
-    if error
-      p= error
-    form(method='POST' action='/auth/login')
-      input(type='email' name='correo' placeholder='Correo')
-      br
-      input(type='password' name='contrasena' placeholder='Contrasena')
-      br
-      button(type='submit') Entrar
-    a(href='/auth/registro') Registrarse
+extends layout
+
+block contenido
+  h2 Iniciar sesion
+  br
+  if error
+    p.text-danger #{error}
+  form(method='POST' action='/auth/login')
+    input.form-control(type='email' name='correo' placeholder='Correo')
+    br
+    input.form-control(type='password' name='contrasena' placeholder='Contrasena')
+    br
+    button.btn.btn-primary(type='submit') Entrar
+  br
+  a(href='/auth/registro') Registrarse

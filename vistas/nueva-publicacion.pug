@@ -1,20 +1,21 @@
-html
-  head
-    title Nueva publicacion - Fotaza 2
-  body
-    h1 Nueva publicacion
-    if error
-      p= error
-    form(method='POST' action='/publicaciones/nueva' enctype='multipart/form-data')
-      input(type='text' name='titulo' placeholder='Titulo')
-      br
-      textarea(name='descripcion' placeholder='Descripcion (opcional)')
-      br
-      input(type='file' name='imagenes' multiple accept='image/*')
-      br
-      select(name='licencia')
-        option(value='libre') Sin copyright
-        option(value='copyright') Con copyright
-      br
-      button(type='submit') Publicar
-    a(href='/') Volver
+extends layout
+
+block contenido
+  .row.justify-content-center
+    .col-md-6
+      h2.mb-4 Nueva publicacion
+      if error
+        .alert.alert-danger #{error}
+      form(method='POST' action='/publicaciones/nueva' enctype='multipart/form-data')
+        .mb-3
+          input.form-control(type='text' name='titulo' placeholder='Titulo')
+        .mb-3
+          textarea.form-control(name='descripcion' placeholder='Descripcion (opcional)' rows='3')
+        .mb-3
+          input.form-control(type='file' name='imagenes' multiple accept='image/*')
+        .mb-3
+          select.form-select(name='licencia')
+            option(value='libre') Sin copyright
+            option(value='copyright') Con copyright
+        button.btn.btn-primary(type='submit') Publicar
+      a.btn.btn-secondary.mt-2(href='/') Volver

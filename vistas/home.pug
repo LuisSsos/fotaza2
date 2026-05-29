@@ -1,18 +1,14 @@
-html
-  head
-    title Fotaza 2
-  body
-    h1 Bienvenido #{usuario.nombre_usuario}
-    a(href='/publicaciones/nueva') Nueva publicacion
-    |  | 
-    a(href='/perfil') Mi perfil
-    |  | 
-    a(href='/auth/logout') Cerrar sesion
-    hr
+extends layout
+
+block contenido
+  h2 Bienvenido #{usuario.nombre_usuario}
+  br
+  .row
     each pub in publicaciones
-      div
-        h3 #{pub.titulo}
-        p por #{pub.nombre_usuario}
-        p #{pub.fecha_publicacion}
-        a(href='/publicaciones/' + pub.id) Ver
-        hr
+      .col-md-4
+        .card.mb-3
+          .card-body
+            h5 #{pub.titulo}
+            p por #{pub.nombre_usuario}
+            br
+            a(href='/publicaciones/' + pub.id) Ver publicacion

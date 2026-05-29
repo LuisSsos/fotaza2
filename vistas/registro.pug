@@ -1,16 +1,17 @@
-html
-  head
-    title Registro - Fotaza 2
-  body
-    h1 Registro
-    if error
-      p= error
-    form(method='POST' action='/auth/registro')
-      input(type='text' name='nombre_usuario' placeholder='Usuario')
-      br
-      input(type='email' name='correo' placeholder='Correo')
-      br
-      input(type='password' name='contrasena' placeholder='Contrasena')
-      br
-      button(type='submit') Registrarse
-    a(href='/auth/login') Ya tengo cuenta
+extends layout
+
+block contenido
+  h2 Registro
+  br
+  if error
+    p.text-danger #{error}
+  form(method='POST' action='/auth/registro')
+    input.form-control(type='text' name='nombre_usuario' placeholder='Usuario')
+    br
+    input.form-control(type='email' name='correo' placeholder='Correo')
+    br
+    input.form-control(type='password' name='contrasena' placeholder='Contrasena')
+    br
+    button.btn.btn-primary(type='submit') Registrarse
+  br
+  a(href='/auth/login') Ya tengo cuenta

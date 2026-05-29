@@ -1,32 +1,38 @@
-html
-  head
-    title #{publicacion.titulo} - Fotaza 2
-  body
-    h2 #{publicacion.titulo}
-    p por #{publicacion.nombre_usuario}
-    if publicacion.descripcion
-      p #{publicacion.descripcion}
-    each imagen in imagenes
-      p Valoracion: #{imagen.promedio} (#{imagen.total_votos} votos)
-      img(src='/imagenes/' + imagen.nombre_archivo style='max-width: 500px')
+extends layout
+
+block contenido
+  h2 #{publicacion.titulo}
+  p por 
+    a(href='/usuarios/' + publicacion.id_autor) #{publicacion.nombre_usuario}
+  br
+  if publicacion.descripcion
+    p #{publicacion.descripcion}
+  br
+  each imagen in imagenes
+    img(src='/imagenes/' + imagen.nombre_archivo style='max-width: 500px')
+    br
+    p Valoracion: #{imagen.promedio} (#{imagen.total_votos} votos)
+    form(method='POST' action=`/publicaciones/${publicacion.id}/imagen/${imagen.id}/valorar`)
+      select.form-select.w-25(name='valor')
+        option(value='1') 1
+        option(value='2') 2
+        option(value='3') 3
+        option(value='4') 4
+        option(value='5') 5
       br
-      form(method='POST' action=`/publicaciones/${publicacion.id}/imagen/${imagen.id}/valorar`)
-        select(name='valor')
-          option(value='1') 1
-          option(value='2') 2
-          option(value='3') 3
-          option(value='4') 4
-          option(value='5') 5
-        button(type='submit') Valorar
+      button.btn.btn-outline-primary(type='submit') Valorar
+    br
+  hr
+  h4 Comentarios
+  each com in comentarios
+    p
+      strong #{com.nombre_usuario}
+      |  #{com.contenido}
+    small.text-muted #{com.fecha}
     hr
-    h3 Comentarios
-    each com in comentarios
-      div
-        p #{com.nombre_usuario}: #{com.contenido}
-        p #{com.fecha}
-        hr
-    form(method='POST' action='/publicaciones/' + publicacion.id + '/comentar')
-      textarea(name='contenido' placeholder='Escribi un comentario')
-      br
-      button(type='submit') Comentar
-    a(href='/') Volver
+  form(method='POST' action='/publicaciones/' + publicacion.id + '/comentar')
+    textarea.form-control(name='contenido' placeholder='Escribi un comentario' rows='2')
+    br
+    button.btn.btn-primary(type='submit') Comentar
+  br
+  a(href='/') Volver
