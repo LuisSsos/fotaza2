@@ -8,6 +8,7 @@ const rutasPublicaciones = require('./rutas/publicaciones');
 const usuarioModelo = require('./modelos/usuario');
 const publicacionModelo = require('./modelos/publicacion');
 const rutasUsuarios = require('./rutas/usuarios')
+const notificacionModelo = require ('./modelos/notificacion')
 const app = express();
 
 app.set('view engine', 'pug');
@@ -37,6 +38,16 @@ app.get('/', verificarSesion, async (req, res) => {
 app.get('/perfil', verificarSesion, async (req, res) => {
     const user = await usuarioModelo.buscarPorId(req.session.usuario.id);
     res.render('perfil', { usuario: user });
+});
+
+app.get('/notificaciones', verificarSesion, async (req, res) => {
+    const notificaciones = await notificacionModelo.obtenerPorUsuario(req.session.usuario.id);
+    res.render('notificaciones', { usuario: req.session.usuario, notificaciones });
+});
+
+app.post('/notificaciones/:id/leida', verificarSesion, async (req, res) => {
+    await notificacionModelo.marcarLeida(req.params.id, req.session.usuario.id);
+    res.redirect('/notificaciones');
 });
 
 app.get('/buscar', verificarSesion, async (req,res) => {

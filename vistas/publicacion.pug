@@ -1,38 +1,39 @@
 extends layout
 
 block contenido
-  h2 #{publicacion.titulo}
-  p por 
-    a(href='/usuarios/' + publicacion.id_autor) #{publicacion.nombre_usuario}
-  br
-  if publicacion.descripcion
-    p #{publicacion.descripcion}
-  br
-  each imagen in imagenes
-    img(src='/imagenes/' + imagen.nombre_archivo style='max-width: 500px')
-    br
-    p Valoracion: #{imagen.promedio} (#{imagen.total_votos} votos)
-    form(method='POST' action=`/publicaciones/${publicacion.id}/imagen/${imagen.id}/valorar`)
-      select.form-select.w-25(name='valor')
-        option(value='1') 1
-        option(value='2') 2
-        option(value='3') 3
-        option(value='4') 4
-        option(value='5') 5
-      br
-      button.btn.btn-outline-primary(type='submit') Valorar
-    br
-  hr
-  h4 Comentarios
-  each com in comentarios
-    p
-      strong #{com.nombre_usuario}
-      |  #{com.contenido}
-    small.text-muted #{com.fecha}
-    hr
-  form(method='POST' action='/publicaciones/' + publicacion.id + '/comentar')
-    textarea.form-control(name='contenido' placeholder='Escribi un comentario' rows='2')
-    br
-    button.btn.btn-primary(type='submit') Comentar
-  br
-  a(href='/') Volver
+  .row
+    .col-md-8
+      h2 #{publicacion.titulo}
+      p.text-muted por 
+        a(href='/usuarios/' + publicacion.id_autor) #{publicacion.nombre_usuario}
+      if publicacion.descripcion
+        p #{publicacion.descripcion}
+      each imagen in imagenes
+        .card.mb-3
+          img.card-img-top(src='/imagenes/' + imagen.nombre_archivo style='max-width: 100%')
+          .card-body
+            p Valoracion: #{imagen.promedio} (#{imagen.total_votos} votos)
+            form(method='POST' action=`/publicaciones/${publicacion.id}/imagen/${imagen.id}/valorar`)
+              .input-group.w-50
+                select.form-select(name='valor')
+                  option(value='1') 1
+                  option(value='2') 2
+                  option(value='3') 3
+                  option(value='4') 4
+                  option(value='5') 5
+                button.btn.btn-outline-primary(type='submit') Valorar
+      hr
+      h4 Comentarios
+      each com in comentarios
+        .card.mb-2
+          .card-body
+            p.mb-0
+              strong #{com.nombre_usuario}
+              |  #{com.contenido}
+            small.text-muted #{com.fecha}
+      hr
+      form(method='POST' action='/publicaciones/' + publicacion.id + '/comentar')
+        .mb-3
+          textarea.form-control(name='contenido' placeholder='Escribi un comentario' rows='2')
+        button.btn.btn-primary(type='submit') Comentar
+      a.btn.btn-secondary.mt-2(href='/') Volver

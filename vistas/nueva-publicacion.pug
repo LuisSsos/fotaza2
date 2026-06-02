@@ -1,21 +1,21 @@
 extends layout
 
 block contenido
-  .row.justify-content-center
-    .col-md-6
-      h2.mb-4 Nueva publicacion
-      if error
-        .alert.alert-danger #{error}
-      form(method='POST' action='/publicaciones/nueva' enctype='multipart/form-data')
-        .mb-3
-          input.form-control(type='text' name='titulo' placeholder='Titulo')
-        .mb-3
-          textarea.form-control(name='descripcion' placeholder='Descripcion (opcional)' rows='3')
-        .mb-3
-          input.form-control(type='file' name='imagenes' multiple accept='image/*')
-        .mb-3
-          select.form-select(name='licencia')
-            option(value='libre') Sin copyright
-            option(value='copyright') Con copyright
-        button.btn.btn-primary(type='submit') Publicar
-      a.btn.btn-secondary.mt-2(href='/') Volver
+  h2 Nueva publicacion
+  br
+  if error
+    p.text-danger #{error}
+  form(method='POST' action='/publicaciones/nueva' enctype='multipart/form-data')
+    input.form-control(type='text' name='titulo' placeholder='Titulo')
+    br
+    textarea.form-control(name='descripcion' placeholder='Descripcion (opcional)')
+    br
+    input.form-control(type='file' name='imagenes' multiple accept='image/*')
+    br
+    select.form-select(name='licencia')
+      option(value='libre') Sin copyright
+      option(value='copyright') Con copyright
+    br
+    button.btn.btn-primary(type='submit') Publicar
+  br
+  a(href='/') Volver

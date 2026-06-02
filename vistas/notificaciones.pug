@@ -1,0 +1,24 @@
+extends layout
+
+block contenido
+  h2 Notificaciones
+  br
+  if notificaciones.length === 0
+    p No tenes notificaciones
+  each noti in notificaciones
+    .card.mb-2
+      .card-body
+        p
+          strong #{noti.actor}
+          if noti.tipo === 'comentario'
+            |  comento tu publicacion
+          else if noti.tipo === 'valoracion'
+            |  valoro tu imagen
+          else if noti.tipo === 'nuevo_seguidor'
+            |  te empezo a seguir
+        small.text-muted #{noti.fecha}
+        if !noti.leida
+          form.d-inline.ms-3(method='POST' action='/notificaciones/' + noti.id + '/leida')
+            button.btn.btn-sm.btn-outline-secondary(type='submit') Marcar leida
+  br
+  a(href='/') Volver

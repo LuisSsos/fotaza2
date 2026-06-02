@@ -1,14 +1,12 @@
 extends layout
 
 block contenido
-  h2 Bienvenido #{usuario.nombre_usuario}
-  br
+  h2.mb-4 Bienvenido #{usuario.nombre_usuario}
   .row
     each pub in publicaciones
-      .col-md-4
-        .card.mb-3
+      .col-md-4.mb-4
+        .card
           .card-body
-            h5 #{pub.titulo}
-            p por #{pub.nombre_usuario}
-            br
-            a(href='/publicaciones/' + pub.id) Ver publicacion
+            h5.card-title #{pub.titulo}
+            p.card-text.text-muted por #{pub.nombre_usuario}
+            a.btn.btn-primary.btn-sm(href='/publicaciones/' + pub.id) Ver

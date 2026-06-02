@@ -5,7 +5,7 @@ const {verificarSesion} = require('../middlewares/auth')
 const subida = require('../config/multer');
 const comentario = require('../modelos/comentario')
 const valoracion = require('../modelos/valoracion');
-
+const notificacion = require('../modelos/notificacion');
 router.get('/nueva', verificarSesion, (req,res) => {
     res.render('nueva-publicacion');
 })
@@ -38,19 +38,29 @@ router.post('/nueva', verificarSesion,subida.array('imagenes',10),async (req,res
     }
 });
 
-router.post('/:id/comentar', verificarSesion, async (req,res) =>{
-    try{
-        await comentario.crear ({
+router.post('/:id/comentar', verificarSesion, async (req, res) => {
+    try {
+        const pub = await publicacion.obtenerPorId(req.params.id);
+        await comentario.crear({
             id_publicacion: req.params.id,
             id_autor: req.session.usuario.id,
             contenido: req.body.contenido
         });
-res.redirect('/publicaciones/' + req.params.id);
-    } catch (err){
+        if (parseInt(req.session.usuario.id) !== pub.id_autor) {
+            await notificacion.crear({
+                id_destinatario: pub.id_autor,
+                id_actor: req.session.usuario.id,
+                tipo: 'comentario',
+                id_publicacion: req.params.id
+            });
+        }
+        res.redirect('/publicaciones/' + req.params.id);
+    } catch (err) {
         console.error(err);
-        res.redirect('/publicaciones/' + req.params.id)
+        res.redirect('/publicaciones/' + req.params.id);
     }
 });
+
 
 router.post('/:id/imagen/:id_imagen/valorar', verificarSesion, async (req, res) => {
     try {
@@ -86,7 +96,7 @@ router.get('/:id', verificarSesion, async (req, res) => {
             img.total_votos = val.total;
         }
 
-        res.render('publicacion', { publicacion: pub, imagenes,comentarios });
+        res.render('publicacion', { publicacion: pub, imagenes, comentarios, usuario: req.session.usuario });
     } catch (err) {
         console.error(err);
         res.redirect('/');
