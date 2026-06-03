@@ -2,7 +2,7 @@
   "name": "fotaza2",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "start": "node app.js",
     "db:init": "mysql -u root -p fotaza2 < fotaza2_estructura.sql",
