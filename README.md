@@ -28,8 +28,6 @@ Crear un archivo `.env` basado en `.env.example`:
 - hola / hola123@gmail.com / contraseña: hola / rol: comun
 - toto / toto123@gmail.com / contraseña: toto / rol: comun
 
-## Problemas que fui encontrando
-
-- Pug es muy estricto con el orden, un espacio de mas y se rompe todo
+## Problemas encontrandos
 - Las sesiones no se guardaban entre redirecciones, se soluciono con req.session.save()
 - MySQL tiraba errores de incompatabilidad en las claves foraneas al recrear las tablas
