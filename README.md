@@ -31,3 +31,5 @@ Crear un archivo `.env` basado en `.env.example`:
 ## Problemas encontrandos
 - Las sesiones no se guardaban entre redirecciones, se soluciono con req.session.save()
 - MySQL tiraba errores de incompatabilidad en las claves foraneas al recrear las tablas
+- Intente usar Railway como nube para mi pagina web, era de pago
+- Migre a postgreSQL para poder usar Render ya que no tomaba SQL

@@ -1,21 +1,21 @@
 const db = require('./db');
 
 async function buscarPorCorreo(correo) {
-    const [filas] = await db.query('SELECT * FROM usuarios WHERE correo = ?', [correo]);
-    return filas[0]; 
+    const resultado = await db.query('SELECT * FROM usuarios WHERE correo = $1', [correo]);
+    return resultado.rows[0]; 
 }
 
-async function buscarPorId(id){
-    const [filas] = await db.query('SELECT * FROM usuarios Where id = ?', [id]);
-    return filas [0];
+async function buscarPorId(id) {
+    const resultado = await db.query('SELECT * FROM usuarios WHERE id = $1', [id]);
+    return resultado.rows[0];
 }
 
-async function crear (datos){
-    const [resuelto] = await db.query (
-        'INSERT INTO usuarios (nombre_usuario, correo, contrasena) VALUES (?,?,?)',
-        [datos.nombre_usuario,datos.correo,datos.contrasena]
+async function crear(datos) {
+    const resultado = await db.query(
+        'INSERT INTO usuarios (nombre_usuario, correo, contrasena) VALUES ($1, $2, $3) RETURNING id',
+        [datos.nombre_usuario, datos.correo, datos.contrasena]
     );
-    return resuelto.insertId;
+    return resultado.rows[0].id;
 }
 
-module.exports  = { buscarPorCorreo, buscarPorId, crear};
+module.exports = { buscarPorCorreo, buscarPorId, crear };

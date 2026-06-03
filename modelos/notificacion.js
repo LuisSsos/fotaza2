@@ -1,36 +1,37 @@
 const db = require('./db');
 
-async function crear(datos){
-await db.query(
-    'INSERT INTO notificaciones (id_destinatario,id_actor,tipo,id_publicacion) VALUEs (?,?,?,?)',
-    [datos.id_destinatario,datos.id_actor,datos.tipo,datos.id_publicacion]
-);
+async function crear(datos) {
+    await db.query(
+        'INSERT INTO notificaciones (id_destinatario, id_actor, tipo, id_publicacion) VALUES ($1, $2, $3, $4)',
+        [datos.id_destinatario, datos.id_actor, datos.tipo, datos.id_publicacion]
+    );
 }
 
-async function obtenerPorUsuario(id_usuario){
-    const [filas] = await db.query(
+async function obtenerPorUsuario(id_usuario) {
+    const resultado = await db.query(
         `SELECT n.*, u.nombre_usuario as actor
          FROM notificaciones n
          JOIN usuarios u ON n.id_actor = u.id
-         WHERE n.id_destinatario = ?
+         WHERE n.id_destinatario = $1
          ORDER BY n.fecha DESC`,
         [id_usuario]
     );
-    return filas;
+    return resultado.rows;
 }
+
 async function marcarLeida(id, id_usuario) {
     await db.query(
-        'UPDATE notificaciones SET leida = 1 WHERE id = ? AND id_destinatario = ?',
+        'UPDATE notificaciones SET leida = true WHERE id = $1 AND id_destinatario = $2',
         [id, id_usuario]
     );
 }
 
 async function contarNoLeidas(id_usuario) {
-    const [filas] = await db.query(
-        'SELECT COUNT(*) as total FROM notificaciones WHERE id_destinatario = ? AND leida = 0',
+    const resultado = await db.query(
+        'SELECT COUNT(*) as total FROM notificaciones WHERE id_destinatario = $1 AND leida = false',
         [id_usuario]
     );
-    return filas[0].total;
+    return parseInt(resultado.rows[0].total);
 }
 
 module.exports = { crear, obtenerPorUsuario, marcarLeida, contarNoLeidas };
