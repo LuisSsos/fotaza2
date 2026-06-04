@@ -10,7 +10,7 @@ block contenido
         p #{publicacion.descripcion}
       each imagen in imagenes
         .card.mb-3
-          img.card-img-top(src='/imagenes/' + imagen.nombre_archivo style='max-width: 100%')
+          img.card-img-top(src=imagen.nombre_archivo style='max-width: 100%')
           .card-body
             p Valoracion: #{imagen.promedio} (#{imagen.total_votos} votos)
             form(method='POST' action=`/publicaciones/${publicacion.id}/imagen/${imagen.id}/valorar`)

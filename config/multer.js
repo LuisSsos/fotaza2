@@ -1,16 +1,22 @@
-const multer =  require('multer');
-const path = require('path');
+const cloudinary = require('cloudinary').v2;
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
+const multer = require('multer');
+require('dotenv').config();
 
-const almacenamiento = multer.diskStorage({
-    destination: (req,file,cb) => {
-        cb(null, 'publico/imagenes');
-    },
-    filename: (req,file,cb) => {
-        const nombre = Date.now() + path.extname(file.originalname);
-        cb(null,nombre)
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+});
+
+const almacenamiento = new CloudinaryStorage({
+    cloudinary,
+    params: {
+        folder: 'fotaza2',
+        allowed_formats: ['jpg', 'jpeg', 'png', 'gif']
     }
 });
 
-const subida = multer ({storage: almacenamiento});
+const subida = multer({ storage: almacenamiento });
 
 module.exports = subida;

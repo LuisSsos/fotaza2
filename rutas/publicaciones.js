@@ -25,7 +25,7 @@ router.post('/nueva', verificarSesion,subida.array('imagenes',10),async (req,res
             for (const archivo of req.files){
                 await publicacion.agregarImagen({
                     id_publicacion,
-                    nombre_archivo: archivo.filename,
+                    nombre_archivo: archivo.path,
                     licencia: licencia || 'libre'
                 });
             }
