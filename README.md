@@ -33,3 +33,4 @@ Crear un archivo `.env` basado en `.env.example`:
 - MySQL tiraba errores de incompatabilidad en las claves foraneas al recrear las tablas
 - Intente usar Railway como nube para mi pagina web, era de pago
 - Migre a postgreSQL para poder usar Render ya que no tomaba SQL
+- Estaba guardando las imagenes en el disco sin saber que deberia subirlo a una nube jajaja

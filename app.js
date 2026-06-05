@@ -7,8 +7,8 @@ const rutasAuth = require('./rutas/auth');
 const rutasPublicaciones = require('./rutas/publicaciones');
 const usuarioModelo = require('./modelos/usuario');
 const publicacionModelo = require('./modelos/publicacion');
-const rutasUsuarios = require('./rutas/usuarios')
-const notificacionModelo = require ('./modelos/notificacion')
+const rutasUsuarios = require('./rutas/usuarios');
+const notificacionModelo = require('./modelos/notificacion');
 const app = express();
 
 app.set('view engine', 'pug');
@@ -27,9 +27,26 @@ app.use(session({
 
 const { verificarSesion } = require('./middlewares/auth');
 
+
+app.use(async (req, res, next) => {
+    if (req.session && req.session.usuario) {
+        try {
+            const noLeidas = await notificacionModelo.contarNoLeidas(req.session.usuario.id);
+            res.locals.noLeidas = noLeidas;
+        } catch (error) {
+            console.error(error);
+            res.locals.noLeidas = 0;
+        }
+    } else {
+        res.locals.noLeidas = 0;
+    }
+    next();
+});
+
 app.use('/auth', rutasAuth);
 app.use('/publicaciones', rutasPublicaciones);
 app.use('/usuarios', rutasUsuarios);
+
 app.get('/', verificarSesion, async (req, res) => {
     const publicaciones = await publicacionModelo.obtenerTodas();
     res.render('home', { usuario: req.session.usuario, publicaciones });
@@ -50,11 +67,12 @@ app.post('/notificaciones/:id/leida', verificarSesion, async (req, res) => {
     res.redirect('/notificaciones');
 });
 
-app.get('/buscar', verificarSesion, async (req,res) => {
+app.get('/buscar', verificarSesion, async (req, res) => {
     const termino = req.query.q || '';
-    const resultados = termino ? await publicacionModelo.buscar(termino): [];
-    res.render('buscar', { resultados,termino})
-})
+    const resultados = termino ? await publicacionModelo.buscar(termino) : [];
+    res.render('buscar', { resultados, termino });
+});
+
 const PUERTO = process.env.PUERTO || 3000;
 app.listen(PUERTO, () => {
     console.log(`Servidor andando en http://localhost:${PUERTO}`);

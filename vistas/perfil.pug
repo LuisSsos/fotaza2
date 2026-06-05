@@ -1,11 +1,14 @@
 extends layout
 
 block contenido
-  h2 #{usuario.nombre_usuario}
-  p #{usuario.correo}
-  br
-  if usuario.biografia
-    p #{usuario.biografia}
-  br
-  a.btn.btn-secondary(href='/') Volver
-  a.btn.btn-danger(href='/auth/logout') Cerrar sesion
+  .card.hl-card.w-50
+    .card-body.hl-card-body
+      h2.text-warning #{usuario.nombre_usuario}
+      p.text-light #{usuario.correo}
+      if usuario.biografia
+        hr.border-secondary
+        p.text-light #{usuario.biografia}
+      
+      .mt-4.d-flex.gap-2
+        a.btn-hl-small(href='/') Volver
+        a.btn-hl-danger(href='/auth/logout') Cerrar sesión

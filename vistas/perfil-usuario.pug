@@ -1,13 +1,16 @@
 extends layout
 
 block contenido
-  h2 #{user.nombre_usuario}
-  br
-  p Seguidores: #{seguidores}
-  p Siguiendo: #{seguidos}
-  br
-  if usuarioActual.id !== user.id
-    form(method='POST' action='/usuarios/' + user.id + '/seguir')
-      button.btn.btn-primary(type='submit')= estaSig ? 'Dejar de seguir' : 'Seguir'
-  br
-  a(href='/') Volver
+  .card.hl-card.w-50
+    .card-body.hl-card-body
+      h2.text-warning #{user.nombre_usuario}
+      br
+      p.text-light Seguidores: #{seguidores}
+      p.text-light Siguiendo: #{seguidos}
+      br
+      if usuarioActual.id !== user.id
+        form(method='POST' action='/usuarios/' + user.id + '/seguir')
+          button.btn-hl-small(type='submit')= estaSig ? 'Dejar de seguir' : 'Seguir'
+      
+      .mt-4
+        a.btn-hl-small(href='/') Volver

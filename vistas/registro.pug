@@ -1,18 +1,19 @@
 extends layout
 
 block contenido
-  .row.justify-content-center
-    .col-md-4
-      h2.mb-4 Registro
-      if error
-        .alert.alert-danger #{error}
-      form(method='POST' action='/auth/registro')
-        .mb-3
-          input.form-control(type='text' name='nombre_usuario' placeholder='Usuario')
-        .mb-3
-          input.form-control(type='email' name='correo' placeholder='Correo')
-        .mb-3
-          input.form-control(type='password' name='contrasena' placeholder='Contrasena')
-        button.btn.btn-primary.w-100(type='submit') Registrarse
-      .mt-3
-        a(href='/auth/login') Ya tengo cuenta
+  .row.justify-content-center.mt-5
+    .col-md-5
+      .card.hl-card
+        .card-body.hl-card-body.text-center
+          h2.mb-4.text-warning Registro
+          if error
+            .alert.alert-danger #{error}
+          form(method='POST' action='/auth/registro')
+            .mb-3
+              input.form-control.bg-dark.text-light.border-secondary(type='text' name='nombre_usuario' placeholder='Usuario')
+            .mb-3
+              input.form-control.bg-dark.text-light.border-secondary(type='email' name='correo' placeholder='Correo')
+            .mb-3
+              input.form-control.bg-dark.text-light.border-secondary(type='password' name='contrasena' placeholder='Contraseña')
+            button.btn-hl-small.w-100.mb-3(type='submit') Registrarse
+          a.text-warning(href='/auth/login') Ya tengo cuenta

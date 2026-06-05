@@ -1,21 +1,22 @@
 extends layout
 
 block contenido
-  h2 Nueva publicacion
-  br
+  h2.mb-4.text-warning Nueva publicación
   if error
     p.text-danger #{error}
-  form(method='POST' action='/publicaciones/nueva' enctype='multipart/form-data')
-    input.form-control(type='text' name='titulo' placeholder='Titulo')
-    br
-    textarea.form-control(name='descripcion' placeholder='Descripcion (opcional)')
-    br
-    input.form-control(type='file' name='imagenes' multiple accept='image/*')
-    br
-    select.form-select(name='licencia')
-      option(value='libre') Sin copyright
-      option(value='copyright') Con copyright
-    br
-    button.btn.btn-primary(type='submit') Publicar
+  .card.hl-card
+    .card-body.hl-card-body
+      form(method='POST' action='/publicaciones/nueva' enctype='multipart/form-data')
+        input.form-control.bg-dark.text-light.border-secondary(type='text' name='titulo' placeholder='Título')
+        br
+        textarea.form-control.bg-dark.text-light.border-secondary(name='descripcion' placeholder='Descripción (opcional)')
+        br
+        input.form-control.bg-dark.text-light.border-secondary(type='file' name='imagenes' multiple accept='image/*')
+        br
+        select.form-select.bg-dark.text-light.border-secondary(name='licencia')
+          option(value='libre') Sin copyright
+          option(value='copyright') Con copyright
+        br
+        button.btn-hl-small(type='submit') Publicar
   br
-  a(href='/') Volver
+  a.btn-hl-small(href='/') Volver

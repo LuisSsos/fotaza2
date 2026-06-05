@@ -1,20 +1,21 @@
 extends layout
 
 block contenido
-  h2.mb-4 Buscar
+  h2.mb-4.text-warning Buscar
   form.mb-4(method='GET' action='/buscar')
     .input-group
-      input.form-control(type='text' name='q' value=termino placeholder='Buscar publicaciones...')
-      button.btn.btn-primary(type='submit') Buscar
-  if termino
-    h5.mb-3 Resultados para: #{termino}
+      input.form-control.bg-dark.text-light.border-secondary(type='text' name='q' value=termino placeholder='Buscar publicaciones...')
+      button.btn-hl-small(type='submit') Buscar
+  a.btn.btn-secondary.mb-3(href='/') Volver
+  if termino && termino.trim() !== ''
+    h5.mb-3.text-light Resultados para: #{termino}
     if resultados.length === 0
-      p No se encontraron publicaciones
+      p.text-muted No se encontraron publicaciones
     .row
       each pub in resultados
         .col-md-4.mb-4
-          .card
-            .card-body
-              h5.card-title #{pub.titulo}
+          .card.hl-card
+            .card-body.hl-card-body
+              h5.card-title.text-warning #{pub.titulo}
               p.card-text.text-muted por #{pub.nombre_usuario}
-              a.btn.btn-primary.btn-sm(href='/publicaciones/' + pub.id) Ver
+              a.btn-hl-small.w-100(href='/publicaciones/' + pub.id) Ver

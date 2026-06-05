@@ -1,12 +1,12 @@
 extends layout
 
 block contenido
-  h2.mb-4 Bienvenido #{usuario.nombre_usuario}
+  h2.mb-4.text-warning Bienvenido #{usuario.nombre_usuario}
   .row
     each pub in publicaciones
       .col-md-4.mb-4
-        .card
-          .card-body
-            h5.card-title #{pub.titulo}
-            p.card-text.text-muted por #{pub.nombre_usuario}
-            a.btn.btn-primary.btn-sm(href='/publicaciones/' + pub.id) Ver
+        .card.hl-card
+          .card-body.hl-card-body
+            h5.card-title.text-warning #{pub.titulo}
+            p.card-text.text-light por #{pub.nombre_usuario}
+            a.btn-hl-small.w-100.d-block.text-center.mt-3(href='/publicaciones/' + pub.id style="text-decoration: none;") Ver
