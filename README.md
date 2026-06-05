@@ -16,6 +16,7 @@ Hecha con Node.js, Express, Pug y MySQL.
 3- Configurar el archivo '.env' con los datos de la base de datos (ver '.env.example')
 4- Ejecutar 'npm run db:init'
 5- Ejecutar 'npm start'
+6- Ejecutar 'npm run db:seed'
 
 La app queda disponible en `http://localhost:3000`
 
