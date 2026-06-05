@@ -26,7 +26,9 @@ body {
 
 .sidebar-hl {
     width: 250px;
-    background: linear-gradient(90deg, #121413 0%, #1a1c1d 100%);
+    background-image: url('/imagenes/panel_metal.jpg');
+    background-repeat: repeat;
+    background-size: cover;
     border-right: 4px solid var(--hl-border);
     box-shadow: inset -5px 0 15px rgba(0,0,0,0.8);
     padding: 20px 0;
@@ -45,10 +47,15 @@ body {
 
 .lambda {
     display: block;
-    font-size: 3rem;
-    color: #fff;
-    opacity: 0.2;
-    margin-top: -10px;
+    font-size: 4.5rem;
+    color: var(--hl-orange);
+    text-shadow: 0 0 15px var(--hl-orange-glow);
+    margin-top: -15px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    opacity: 1;
+    text-transform: lowercase;
+    text-shadow: 0 0 15px var(--hl-orange-glow);
 }
 
 .sidebar-hl .nav-link {

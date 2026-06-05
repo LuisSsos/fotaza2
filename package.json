@@ -22,6 +22,7 @@
     "multer-storage-cloudinary": "^4.0.0",
     "mysql2": "^3.22.3",
     "pg": "^8.21.0",
+    "db:seed": "psql $DATABASE_URL < seeds.sql",
     "pug": "^3.0.4"
   }
 }
