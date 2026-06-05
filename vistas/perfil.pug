@@ -3,6 +3,8 @@ extends layout
 block contenido
   .card.hl-card.w-50
     .card-body.hl-card-body
+      if usuario.foto_perfil
+        img(src=usuario.foto_perfil style='width: 120px; height: 120px; border-radius: 50%')
       h2.text-warning #{usuario.nombre_usuario}
       p.text-light #{usuario.correo}
       if usuario.biografia
@@ -10,5 +12,6 @@ block contenido
         p.text-light #{usuario.biografia}
       
       .mt-4.d-flex.gap-2
+        a.btn-hl-small(href='/perfil/editar') Editar foto
         a.btn-hl-small(href='/') Volver
-        a.btn-hl-danger(href='/auth/logout') Cerrar sesión
+        a.btn-hl-danger(href='/auth/logout') Cerrar sesion

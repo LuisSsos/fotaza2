@@ -3,6 +3,8 @@ extends layout
 block contenido
   .card.hl-card.w-50
     .card-body.hl-card-body
+      if user.foto_perfil
+        img(src=user.foto_perfil style='width: 120px; height: 120px; border-radius: 50%')
       h2.text-warning #{user.nombre_usuario}
       br
       p.text-light Seguidores: #{seguidores}

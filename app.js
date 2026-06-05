@@ -9,6 +9,7 @@ const usuarioModelo = require('./modelos/usuario');
 const publicacionModelo = require('./modelos/publicacion');
 const rutasUsuarios = require('./rutas/usuarios');
 const notificacionModelo = require('./modelos/notificacion');
+const subida = require('./config/multer');
 const app = express();
 
 app.set('view engine', 'pug');
@@ -55,6 +56,16 @@ app.get('/', verificarSesion, async (req, res) => {
 app.get('/perfil', verificarSesion, async (req, res) => {
     const user = await usuarioModelo.buscarPorId(req.session.usuario.id);
     res.render('perfil', { usuario: user });
+});
+
+app.get('/perfil/editar', verificarSesion, (req, res) => {
+    res.render('editar-perfil', { usuario: req.session.usuario });
+});
+
+app.post('/perfil/foto', verificarSesion, subida.single('foto'), async (req, res) => {
+    await usuarioModelo.actualizarFotoPerfil(req.session.usuario.id, req.file.path);
+    req.session.usuario.foto_perfil = req.file.path;
+    req.session.save(() => res.redirect('/perfil'));
 });
 
 app.get('/notificaciones', verificarSesion, async (req, res) => {
