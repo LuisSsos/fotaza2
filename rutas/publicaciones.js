@@ -6,9 +6,11 @@ const subida = require('../config/multer');
 const comentario = require('../modelos/comentario')
 const valoracion = require('../modelos/valoracion');
 const notificacion = require('../modelos/notificacion');
-router.get('/nueva', verificarSesion, (req,res) => {
-    res.render('nueva-publicacion');
-})
+
+
+router.get('/nueva', verificarSesion, (req, res) => {
+    res.render('nueva-publicacion', { usuario: req.session.usuario });
+});
 
 
 
@@ -82,13 +84,24 @@ router.post('/:id/imagen/:id_imagen/valorar', verificarSesion, async (req, res) 
     }
 });
 
+router.post('/:id/eliminar', verificarSesion, async (req, res) => {
+    try {
+        const pub = await publicacion.obtenerPorId(req.params.id);
+        if (!pub || pub.id_autor !== parseInt(req.session.usuario.id)) return res.redirect('/');
+        await publicacion.eliminar(req.params.id);
+        res.redirect('/');
+    } catch (err) {
+        console.error(err);
+        res.redirect('/');
+    }
+});
 
-router.get('/:id', verificarSesion, async (req, res) => {
+router.get('/:id', async (req, res) => {
     try {
         const pub = await publicacion.obtenerPorId(req.params.id);
         if (!pub) return res.redirect('/');
         const imagenes = await publicacion.obtenerImagenes(req.params.id);
-        const comentarios = await comentario.obtenerPorPublicacion(req.params.id)
+        const comentarios = await comentario.obtenerPorPublicacion(req.params.id);
 
         for (const img of imagenes) {
             const val = await valoracion.obtenerPromedio(img.id);
@@ -96,11 +109,13 @@ router.get('/:id', verificarSesion, async (req, res) => {
             img.total_votos = val.total;
         }
 
-        res.render('publicacion', { publicacion: pub, imagenes, comentarios, usuario: req.session.usuario });
+        res.render('publicacion', { publicacion: pub, imagenes, comentarios, usuario: req.session.usuario || null });
     } catch (err) {
         console.error(err);
         res.redirect('/');
     }
 });
+
+
 
 module.exports = router;

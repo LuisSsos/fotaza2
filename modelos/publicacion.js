@@ -8,14 +8,23 @@ async function crear(datos) {
     return resultado.rows[0].id;
 }
 
-async function obtenerTodas() {
-    const resultado = await db.query(
-        `SELECT p.*, u.nombre_usuario 
+async function obtenerTodas(soloPublicas = false) {
+    let query = `SELECT p.*, u.nombre_usuario 
          FROM publicaciones p 
          JOIN usuarios u ON p.id_autor = u.id 
-         WHERE p.estado = 'activa' 
-         ORDER BY p.fecha_publicacion DESC`
-    );
+         WHERE p.estado = 'activa'`;
+    
+    if (soloPublicas) {
+        query += ` AND EXISTS (
+            SELECT 1 FROM imagenes i 
+            WHERE i.id_publicacion = p.id 
+            AND i.licencia = 'libre'
+        )`;
+    }
+    
+    query += ` ORDER BY p.fecha_publicacion DESC`;
+    
+    const resultado = await db.query(query);
     return resultado.rows;
 }
 
@@ -87,4 +96,19 @@ async function bajarPublicacion(id) {
     );
 }
 
-module.exports = { crear, obtenerTodas, obtenerPorId, agregarImagen, obtenerImagenes, buscar, cambiarEstado, bajarPublicacion };
+async function obtenerImagenPorId(id) {
+    const resultado = await db.query(
+        `SELECT img.*, p.id_autor, p.id as id_publicacion
+         FROM imagenes img
+         JOIN publicaciones p ON img.id_publicacion = p.id
+         WHERE img.id = $1`,
+        [id]
+    );
+    return resultado.rows[0];
+}
+
+async function eliminar(id) {
+    await db.query('DELETE FROM publicaciones WHERE id = $1', [id]);
+}
+
+module.exports = { crear, obtenerTodas, obtenerPorId, agregarImagen, obtenerImagenes, buscar, cambiarEstado, bajarPublicacion, obtenerImagenPorId, eliminar };

@@ -1,7 +1,10 @@
 extends layout
 
 block contenido
-  h2.mb-4.text-warning Bienvenido #{usuario.nombre_usuario}
+  if usuario
+    h2.mb-4.text-warning Bienvenido #{usuario.nombre_usuario}
+  else
+    h2.mb-4.text-warning Fotaza 2
   .row
     each pub in publicaciones
       .col-md-4.mb-4

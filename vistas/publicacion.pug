@@ -10,22 +10,29 @@ block contenido
             a.text-warning(href='/usuarios/' + publicacion.id_autor) #{publicacion.nombre_usuario}
           if publicacion.descripcion
             p.text-light #{publicacion.descripcion}
+
+          if usuario && usuario.id == publicacion.id_autor
+            form.mt-2(method='POST' action='/publicaciones/' + publicacion.id + '/eliminar' onsubmit='return confirm("¿Seguro que queres eliminar esta publicacion?")')
+              button.btn-hl-danger(type='submit') Eliminar publicacion
       
       each imagen in imagenes
         .card.hl-card.mb-4
           img.card-img-top(src=imagen.nombre_archivo style='max-width: 100%; border-bottom: 2px solid #4a5043;')
           .card-body.hl-card-body
             p.text-light Valoracion: #{imagen.promedio} (#{imagen.total_votos} votos)
-            form(method='POST' action=`/publicaciones/${publicacion.id}/imagen/${imagen.id}/valorar`)
-              .input-group.w-50
-                select.form-select.bg-dark.text-light.border-secondary(name='valor')
-                  option(value='1') 1
-                  option(value='2') 2
-                  option(value='3') 3
-                  option(value='4') 4
-                  option(value='5') 5
-                button.btn-hl-small(type='submit') Valorar
-            a.btn-hl-danger(href='/denuncias/imagen/' + imagen.id + '?id_publicacion=' + publicacion.id) Denunciar
+            if usuario
+              form(method='POST' action=`/publicaciones/${publicacion.id}/imagen/${imagen.id}/valorar`)
+                .input-group.w-50
+                  select.form-select.bg-dark.text-light.border-secondary(name='valor')
+                    option(value='1') 1
+                    option(value='2') 2
+                    option(value='3') 3
+                    option(value='4') 4
+                    option(value='5') 5
+                  button.btn-hl-small(type='submit') Valorar
+              a.btn-hl-danger(href='/denuncias/imagen/' + imagen.id + '?id_publicacion=' + publicacion.id) Denunciar
+              form.mt-2(method='POST' action='/intereses/imagen/' + imagen.id)
+                button.btn-hl-small(type='submit') Me interesa
       
       hr.border-secondary
       h4.text-warning Comentarios
@@ -37,11 +44,14 @@ block contenido
               |  #{com.contenido}
             small.text-muted #{com.fecha}
       
-      hr.border-secondary
-      form(method='POST' action='/publicaciones/' + publicacion.id + '/comentar')
-        .mb-3
-          textarea.form-control.bg-dark.text-light.border-secondary(name='contenido' placeholder='Escribí un comentario' rows='2')
-        button.btn-hl-small(type='submit') Comentar
+      if usuario
+        hr.border-secondary
+        form(method='POST' action='/publicaciones/' + publicacion.id + '/comentar')
+          .mb-3
+            textarea.form-control.bg-dark.text-light.border-secondary(name='contenido' placeholder='Escribi un comentario' rows='2')
+          button.btn-hl-small(type='submit') Comentar
+      else
+        p.text-muted Iniciá sesion para comentar
         
       br
       a.btn-hl-small(href='/') Volver

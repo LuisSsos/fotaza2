@@ -1,0 +1,19 @@
+extends layout
+
+block contenido
+  h2.text-warning Chat
+  br
+  each msg in mensajes
+    .card.hl-card.mb-2
+      .card-body.hl-card-body
+        p.mb-0.text-light
+          strong.text-warning #{msg.nombre_usuario}
+          |  #{msg.contenido}
+        small.text-muted #{msg.fecha}
+  hr.border-secondary
+  form(method='POST' action='/intereses/chat/' + conv.id)
+    .mb-3
+      textarea.form-control.bg-dark.text-light.border-secondary(name='contenido' placeholder='Escribi un mensaje' rows='2')
+    button.btn-hl-small(type='submit') Enviar
+  br
+  a.btn-hl-small(href='/intereses/conversaciones') Volver

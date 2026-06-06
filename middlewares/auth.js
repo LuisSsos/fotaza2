@@ -12,4 +12,10 @@ function soloInvitados (req,res,next){
     next();
 }
 
+function sesionOpcional(req, res, next) {
+    next();
+}
+
+module.exports = { verificarSesion, soloInvitados, sesionOpcional };
+
 module.exports = { verificarSesion, soloInvitados};

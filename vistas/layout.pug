@@ -15,28 +15,36 @@ html
           ul.nav.flex-column.mt-4
             li.nav-item: a.nav-link(href='/') ◖ Inicio
             li.nav-item: a.nav-link(href='/buscar') ◖ Buscar
-            
             if noLeidas > 0
               li.nav-item: a.nav-link.alerta-lateral(href='/notificaciones') ◖ Notificaciones (#{noLeidas})
             else
               li.nav-item: a.nav-link(href='/notificaciones') ◖ Notificaciones
-              
             li.nav-item: a.nav-link(href='/publicaciones/nueva') ◖ Nueva Publicación
+      else
+        aside.sidebar-hl
+          .sidebar-logo Fotaza 2
+            span.lambda λ
+          ul.nav.flex-column.mt-4
+            li.nav-item: a.nav-link(href='/') ◖ Inicio
+            li.nav-item: a.nav-link(href='/buscar') ◖ Buscar
 
       main.contenido-principal.flex-grow-1
         if usuario
-          
           nav.navbar.topbar-hl.px-4.mb-4
             .d-flex.w-100.justify-content-end.gap-3
-              
               if noLeidas > 0
                 a.btn-hl-small.btn-hl-alert(href='/notificaciones') Notificaciones (#{noLeidas})
               else
                 a.btn-hl-small(href='/notificaciones') Notificaciones
-                
+              a.btn-hl-small(href='/intereses/conversaciones') Mensajes
               a.btn-hl-small(href='/publicaciones/nueva') Nueva Publicación
               a.btn-hl-small(href='/perfil') Perfil
               a.btn-hl-danger(href='/auth/logout') Salir
+        else
+          nav.navbar.topbar-hl.px-4.mb-4
+            .d-flex.w-100.justify-content-end.gap-3
+              a.btn-hl-small(href='/auth/login') Iniciar sesion
+              a.btn-hl-small(href='/auth/registro') Registrarse
         
         .container-fluid
           block contenido

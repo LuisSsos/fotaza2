@@ -7,8 +7,10 @@ block contenido
   .card.hl-card
     .card-body.hl-card-body
       form(method='POST' action='/publicaciones/nueva' enctype='multipart/form-data')
+        label.text-light Titulo de la publicacion
         input.form-control.bg-dark.text-light.border-secondary(type='text' name='titulo' placeholder='Título')
         br
+        label.text-light Descripción
         textarea.form-control.bg-dark.text-light.border-secondary(name='descripcion' placeholder='Descripción (opcional)')
         br
         input.form-control.bg-dark.text-light.border-secondary(type='file' name='imagenes' multiple accept='image/*')

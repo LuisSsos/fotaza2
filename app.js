@@ -12,6 +12,7 @@ const notificacionModelo = require('./modelos/notificacion');
 const rutasDenuncias = require('./rutas/denuncias');
 const subida = require('./config/multer');
 const app = express();
+const rutasIntereses = require('./rutas/intereses');
 
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'vistas'));
@@ -45,14 +46,21 @@ app.use(async (req, res, next) => {
     next();
 });
 
+app.use((req, res, next) => {
+    res.locals.usuario = req.session.usuario || null;
+    next();
+});
+
 app.use('/auth', rutasAuth);
 app.use('/publicaciones', rutasPublicaciones);
 app.use('/usuarios', rutasUsuarios);
 app.use('/denuncias', rutasDenuncias);
+app.use('/intereses', rutasIntereses);
 
-app.get('/', verificarSesion, async (req, res) => {
-    const publicaciones = await publicacionModelo.obtenerTodas();
-    res.render('home', { usuario: req.session.usuario, publicaciones });
+app.get('/', async (req, res) => {
+    const soloPublicas = !req.session.usuario;
+    const publicaciones = await publicacionModelo.obtenerTodas(soloPublicas);
+    res.render('home', { usuario: req.session.usuario || null, publicaciones });
 });
 
 app.get('/perfil', verificarSesion, async (req, res) => {

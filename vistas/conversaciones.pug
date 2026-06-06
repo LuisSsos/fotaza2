@@ -1,0 +1,17 @@
+extends layout
+
+block contenido
+  h2.text-warning Mensajes
+  br
+  if conversaciones.length === 0
+    p.text-light No tenes mensajes todavia
+  each conv in conversaciones
+    .card.hl-card.mb-3
+      .card-body.hl-card-body
+        p.text-light Publicacion: 
+          strong.text-warning #{conv.titulo}
+        p.text-light Usuario: 
+          strong.text-warning #{conv.interesado}
+        a.btn-hl-small(href='/intereses/chat/' + conv.id) Abrir conversacion
+  br
+  a.btn-hl-small(href='/') Volver

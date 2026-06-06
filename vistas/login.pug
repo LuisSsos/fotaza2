@@ -10,8 +10,10 @@ block contenido
             .alert.alert-danger #{error}
           form(method='POST' action='/auth/login')
             .mb-3
+              label.text-light Correo Electronico 
               input.form-control.bg-dark.text-light.border-secondary(type='email' name='correo' placeholder='Correo')
             .mb-3
+              label.text-light Contraseña
               input.form-control.bg-dark.text-light.border-secondary(type='password' name='contrasena' placeholder='Contraseña')
             button.btn-hl-small.w-100.mb-3(type='submit') Entrar
           a.text-warning(href='/auth/registro') No tengo cuenta
