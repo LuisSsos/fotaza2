@@ -11,7 +11,7 @@
 body {
     background-color: var(--hl-bg-dark);
     
-    background-image: url('https://res.cloudinary.com/dbvlmfsyp/image/upload/v.../pared.jpg');
+    background-image: url('https://res.cloudinary.com/dbvlmfsyp/image/upload/v1780784604/pared_svjzuw.jpg');
     background-size: cover;
     background-attachment: fixed;
     color: #a8b2a1;
@@ -26,7 +26,7 @@ body {
 
 .sidebar-hl {
     width: 250px;
-    background-image: url('https://res.cloudinary.com/dbvlmfsyp/image/upload/v.../panel_metal.jpg');
+    background-image: url('https://res.cloudinary.com/dbvlmfsyp/image/upload/v1780784605/panel_metal_yce3ij.png');
     background-repeat: repeat;
     background-size: cover;
     border-right: 4px solid var(--hl-border);
