@@ -9,6 +9,7 @@ const usuarioModelo = require('./modelos/usuario');
 const publicacionModelo = require('./modelos/publicacion');
 const rutasUsuarios = require('./rutas/usuarios');
 const notificacionModelo = require('./modelos/notificacion');
+const rutasDenuncias = require('./rutas/denuncias');
 const subida = require('./config/multer');
 const app = express();
 
@@ -47,6 +48,7 @@ app.use(async (req, res, next) => {
 app.use('/auth', rutasAuth);
 app.use('/publicaciones', rutasPublicaciones);
 app.use('/usuarios', rutasUsuarios);
+app.use('/denuncias', rutasDenuncias);
 
 app.get('/', verificarSesion, async (req, res) => {
     const publicaciones = await publicacionModelo.obtenerTodas();

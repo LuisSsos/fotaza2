@@ -15,7 +15,7 @@ block contenido
         .card.hl-card.mb-4
           img.card-img-top(src=imagen.nombre_archivo style='max-width: 100%; border-bottom: 2px solid #4a5043;')
           .card-body.hl-card-body
-            p.text-light Valoración: #{imagen.promedio} (#{imagen.total_votos} votos)
+            p.text-light Valoracion: #{imagen.promedio} (#{imagen.total_votos} votos)
             form(method='POST' action=`/publicaciones/${publicacion.id}/imagen/${imagen.id}/valorar`)
               .input-group.w-50
                 select.form-select.bg-dark.text-light.border-secondary(name='valor')
@@ -25,6 +25,7 @@ block contenido
                   option(value='4') 4
                   option(value='5') 5
                 button.btn-hl-small(type='submit') Valorar
+            a.btn-hl-danger(href='/denuncias/imagen/' + imagen.id + '?id_publicacion=' + publicacion.id) Denunciar
       
       hr.border-secondary
       h4.text-warning Comentarios

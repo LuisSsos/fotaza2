@@ -1,0 +1,18 @@
+extends layout
+
+block contenido
+  .card.hl-card.w-50
+    .card-body.hl-card-body
+      h2.text-warning Denunciar imagen
+      br
+      form(method='POST' action='/denuncias/imagen/' + id_imagen)
+        input(type='hidden' name='id_publicacion' value=id_publicacion)
+        .mb-3
+          select.form-control.bg-dark.text-light.border-secondary(name='id_motivo')
+            each motivo in motivos
+              option(value=motivo.id) #{motivo.descripcion}
+        .mb-3
+          textarea.form-control.bg-dark.text-light.border-secondary(name='justificacion' placeholder='Justificacion' rows='3')
+        button.btn-hl-small(type='submit') Denunciar
+      br
+      a.btn-hl-small(href='/') Volver

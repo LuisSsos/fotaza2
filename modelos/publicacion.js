@@ -59,4 +59,32 @@ async function buscar(termino) {
     return resultado.rows;
 }
 
-module.exports = { crear, obtenerTodas, obtenerPorId, agregarImagen, obtenerImagenes, buscar };
+
+async function cambiarEstado(id, estado) {
+    await db.query(
+        'UPDATE publicaciones SET estado = $1 WHERE id = $2',
+        [estado, id]
+    );
+}
+
+async function bajarPublicacion(id) {
+    await db.query(
+        'UPDATE publicaciones SET estado = $2 WHERE id = $1',
+        [id, 'baja']
+    );
+    const resultado = await db.query(
+        'SELECT id_autor FROM publicaciones WHERE id = $1',
+        [id]
+    );
+    const id_autor = resultado.rows[0].id_autor;
+    await db.query(
+        'UPDATE usuarios SET pub_bajadas = pub_bajadas + 1 WHERE id = $1',
+        [id_autor]
+    );
+    await db.query(
+        'UPDATE usuarios SET activo = false WHERE id = $1 AND pub_bajadas >= 3',
+        [id_autor]
+    );
+}
+
+module.exports = { crear, obtenerTodas, obtenerPorId, agregarImagen, obtenerImagenes, buscar, cambiarEstado, bajarPublicacion };

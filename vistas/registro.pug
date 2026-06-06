@@ -10,10 +10,13 @@ block contenido
             .alert.alert-danger #{error}
           form(method='POST' action='/auth/registro')
             .mb-3
+              label.text-light Nombre de usuario
               input.form-control.bg-dark.text-light.border-secondary(type='text' name='nombre_usuario' placeholder='Usuario')
             .mb-3
+              label.text-light Correo electronico
               input.form-control.bg-dark.text-light.border-secondary(type='email' name='correo' placeholder='Correo')
             .mb-3
+              label.text-light Contraseña
               input.form-control.bg-dark.text-light.border-secondary(type='password' name='contrasena' placeholder='Contraseña')
             button.btn-hl-small.w-100.mb-3(type='submit') Registrarse
           a.text-warning(href='/auth/login') Ya tengo cuenta

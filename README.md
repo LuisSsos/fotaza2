@@ -28,6 +28,7 @@ Crear un archivo `.env` basado en `.env.example`:
 
 - hola / hola123@gmail.com / contraseña: hola / rol: comun
 - toto / toto123@gmail.com / contraseña: toto / rol: comun
+- validador/ validador@fotaza2.com / contraseña: validador1234 / rol: validador
 
 ## Problemas encontrandos
 - Las sesiones no se guardaban entre redirecciones, se soluciono con req.session.save()
