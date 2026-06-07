@@ -103,6 +103,18 @@ router.post('/:id/eliminar', verificarSesion, async (req, res) => {
     }
 });
 
+router.post('/:id/comentarios/toggle', verificarSesion, async (req, res) => {
+    try {
+        const pub = await publicacion.obtenerPorId(req.params.id);
+        if (!pub || pub.id_autor !== parseInt(req.session.usuario.id)) return res.redirect('/');
+        await publicacion.toggleComentarios(req.params.id);
+        res.redirect('/publicaciones/' + req.params.id);
+    } catch (err) {
+        console.error(err);
+        res.redirect('/publicaciones/' + req.params.id);
+    }
+});
+
 router.get('/:id', async (req, res) => {
     try {
         const pub = await publicacion.obtenerPorId(req.params.id);

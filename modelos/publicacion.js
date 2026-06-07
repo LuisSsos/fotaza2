@@ -130,4 +130,11 @@ async function obtenerEtiquetas(id_publicacion) {
     return resultado.rows;
 }
 
-module.exports = { crear, obtenerTodas, obtenerPorId, agregarImagen, obtenerImagenes, buscar, cambiarEstado, bajarPublicacion, obtenerImagenPorId, eliminar, agregarEtiqueta, obtenerEtiquetas};
+async function toggleComentarios(id) {
+    await db.query(
+        'UPDATE publicaciones SET comentarios_abiertos = NOT comentarios_abiertos WHERE id = $1',
+        [id]
+    );
+}
+
+module.exports = { crear, obtenerTodas, obtenerPorId, agregarImagen, obtenerImagenes, buscar, cambiarEstado, bajarPublicacion, obtenerImagenPorId, eliminar, agregarEtiqueta, obtenerEtiquetas, toggleComentarios};
