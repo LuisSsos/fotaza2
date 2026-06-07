@@ -6,6 +6,10 @@ block contenido
       .card.hl-card.mb-4
         .card-body.hl-card-body
           h2.text-warning #{publicacion.titulo}
+          if etiquetas.length > 0
+            .mb-2
+              each etiq in etiquetas
+                span.badge.me-1(style='background-color: var(--hl-orange); color: #000;') #{etiq.nombre}
           p.text-muted por 
             a.text-warning(href='/usuarios/' + publicacion.id_autor) #{publicacion.nombre_usuario}
           if publicacion.descripcion

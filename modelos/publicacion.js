@@ -57,13 +57,15 @@ async function obtenerImagenes(id_publicacion) {
 
 async function buscar(termino) {
     const resultado = await db.query(
-        `SELECT p.*, u.nombre_usuario 
+        `SELECT DISTINCT p.*, u.nombre_usuario 
          FROM publicaciones p 
          JOIN usuarios u ON p.id_autor = u.id 
+         LEFT JOIN publicaciones_etiquetas pe ON p.id = pe.id_publicacion
+         LEFT JOIN etiquetas e ON pe.id_etiqueta = e.id
          WHERE p.estado = 'activa' 
-         AND (p.titulo ILIKE $1 OR p.descripcion ILIKE $2)
+         AND (p.titulo ILIKE $1 OR p.descripcion ILIKE $2 OR e.nombre ILIKE $3)
          ORDER BY p.fecha_publicacion DESC`,
-        [`%${termino}%`, `%${termino}%`]
+        [`%${termino}%`, `%${termino}%`, `%${termino}%`]
     );
     return resultado.rows;
 }
@@ -111,4 +113,21 @@ async function eliminar(id) {
     await db.query('DELETE FROM publicaciones WHERE id = $1', [id]);
 }
 
-module.exports = { crear, obtenerTodas, obtenerPorId, agregarImagen, obtenerImagenes, buscar, cambiarEstado, bajarPublicacion, obtenerImagenPorId, eliminar };
+async function agregarEtiqueta(id_publicacion, id_etiqueta) {
+    await db.query(
+        'INSERT INTO publicaciones_etiquetas (id_publicacion, id_etiqueta) VALUES ($1, $2) ON CONFLICT DO NOTHING',
+        [id_publicacion, id_etiqueta]
+    );
+}
+
+async function obtenerEtiquetas(id_publicacion) {
+    const resultado = await db.query(
+        `SELECT e.* FROM etiquetas e
+         JOIN publicaciones_etiquetas pe ON e.id = pe.id_etiqueta
+         WHERE pe.id_publicacion = $1`,
+        [id_publicacion]
+    );
+    return resultado.rows;
+}
+
+module.exports = { crear, obtenerTodas, obtenerPorId, agregarImagen, obtenerImagenes, buscar, cambiarEstado, bajarPublicacion, obtenerImagenPorId, eliminar, agregarEtiqueta, obtenerEtiquetas};
