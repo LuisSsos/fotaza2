@@ -13,6 +13,8 @@ const rutasDenuncias = require('./rutas/denuncias');
 const subida = require('./config/multer');
 const app = express();
 const rutasIntereses = require('./rutas/intereses');
+const rutasColecciones = require('./rutas/colecciones');
+
 
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'vistas'));
@@ -56,6 +58,7 @@ app.use('/publicaciones', rutasPublicaciones);
 app.use('/usuarios', rutasUsuarios);
 app.use('/denuncias', rutasDenuncias);
 app.use('/intereses', rutasIntereses);
+app.use('/colecciones', rutasColecciones);
 
 app.get('/', async (req, res) => {
     const soloPublicas = !req.session.usuario;

@@ -1,0 +1,23 @@
+extends layout
+
+block contenido
+  h2(style="color: var(--hl-orange); text-shadow: 0 0 8px var(--hl-orange-glow); font-family: 'Share Tech Mono', monospace;") Mis colecciones
+  br
+  .card.hl-card.mb-4(style="border-radius: 0;")
+    .card-body.hl-card-body
+      form.m-0(method='POST' action='/colecciones/nueva')
+        .d-flex.align-items-stretch.gap-2
+          input(type='text' name='nombre' placeholder='Nombre de la coleccion' style="flex-grow: 1; background-color: #0c0d0b; color: var(--hl-orange); border: 2px solid var(--hl-border); padding: 10px; outline: none; font-family: 'Share Tech Mono', monospace;")
+          button.btn-hl-small(type='submit') Crear
+          
+  if colecciones.length === 0
+    p(style="color: rgba(245, 124, 0, 0.7); font-family: 'Share Tech Mono', monospace;") No hay colecciones todavia
+    
+  each col in colecciones
+    .card.hl-card.mb-3(style="border-radius: 0;")
+      .card-body.hl-card-body
+        h5(style="color: var(--hl-orange); text-shadow: 0 0 5px var(--hl-orange-glow); font-family: 'Share Tech Mono', monospace;") #{col.nombre}
+        .d-flex.align-items-center.gap-2.mt-3
+          a.btn-hl-small(href='/colecciones/' + col.id) Ver
+          form.m-0(method='POST' action='/colecciones/' + col.id + '/eliminar' onsubmit='return confirm("¿Eliminar esta coleccion?")')
+            button.btn-hl-danger(type='submit') Eliminar

@@ -15,11 +15,7 @@ html
           ul.nav.flex-column.mt-4
             li.nav-item: a.nav-link(href='/') ◖ Inicio
             li.nav-item: a.nav-link(href='/buscar') ◖ Buscar
-            if noLeidas > 0
-              li.nav-item: a.nav-link.alerta-lateral(href='/notificaciones') ◖ Notificaciones (#{noLeidas})
-            else
-              li.nav-item: a.nav-link(href='/notificaciones') ◖ Notificaciones
-            li.nav-item: a.nav-link(href='/publicaciones/nueva') ◖ Nueva Publicación
+            li.nav-item: a.nav-link(href='/colecciones') ◖ Colecciones
       else
         aside.sidebar-hl
           .sidebar-logo Fotaza 2

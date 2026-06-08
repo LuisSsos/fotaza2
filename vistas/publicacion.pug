@@ -31,17 +31,15 @@ block contenido
                       option(value='4' style="background-color: #0c0d0b; color: var(--hl-orange);") 4
                       option(value='5' style="background-color: #0c0d0b; color: var(--hl-orange);") 5
                     button.btn-hl-small(type='submit' style="border: none; margin: 0; min-width: auto;") Valorar
-                
                 form.m-0(method='POST' action='/intereses/imagen/' + imagen.id)
                   button.btn-hl-small(type='submit') Me interesa
-                
+                form.m-0(method='GET' action='/colecciones/seleccionar')
+                  input(type='hidden' name='id_publicacion' value=publicacion.id)
+                  button.btn-hl-small(type='submit') Guardar en coleccion
+                a.btn-hl-danger(href='/denuncias/imagen/' + imagen.id + '?id_publicacion=' + publicacion.id style="display: flex; align-items: center; justify-content: center;") Denunciar
                 if usuario.id == publicacion.id_autor
                   form.m-0(method='POST' action='/publicaciones/' + publicacion.id + '/comentarios/toggle')
                     button.btn-hl-small(type='submit')= publicacion.comentarios_abiertos ? 'Cerrar comentarios' : 'Abrir comentarios'
-                
-                a.btn-hl-danger(href='/denuncias/imagen/' + imagen.id + '?id_publicacion=' + publicacion.id style="display: flex; align-items: center; justify-content: center;") Denunciar
-                
-                if usuario.id == publicacion.id_autor
                   form.m-0(method='POST' action='/publicaciones/' + publicacion.id + '/eliminar' onsubmit='return confirm("¿Seguro que queres eliminar esta publicacion?")')
                     button.btn-hl-danger(type='submit') Eliminar publicacion
       

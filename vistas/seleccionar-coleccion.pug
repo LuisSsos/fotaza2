@@ -1,0 +1,18 @@
+extends layout
+
+block contenido
+  h2.text-warning Guardar en coleccion
+  br
+  if colecciones.length === 0
+    p.text-light No tenes colecciones. 
+      a.text-warning(href='/colecciones') Crea una primero
+  else
+    form(method='POST' action='/colecciones/seleccionar')
+      input(type='hidden' name='id_publicacion' value=id_publicacion)
+      .mb-3
+        select.form-select.bg-dark.text-light.border-secondary(name='id_coleccion')
+          each col in colecciones
+            option(value=col.id) #{col.nombre}
+      button.btn-hl-small(type='submit') Guardar
+  br
+  a.btn-hl-small(href='/') Volver
