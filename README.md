@@ -28,11 +28,15 @@ Crear un archivo `.env` basado en `.env.example`:
 
 - hola / hola123@gmail.com / contraseña: hola / rol: comun
 - toto / toto123@gmail.com / contraseña: toto / rol: comun
+- jesus/ jesus123@gmail.com/ contraseña: jesus/ rol: comun
+
+// hago tres usuarios de prueba para poder denunciar una publicacion y el validaor pueda hacer su rol
+
 - validador/ validador@fotaza2.com / contraseña: validador1234 / rol: validador
 
 ## Problemas encontrandos
 - Las sesiones no se guardaban entre redirecciones, se soluciono con req.session.save()
-- MySQL tiraba errores de incompatabilidad en las claves foraneas al recrear las tablas
-- Intente usar Railway como nube para mi pagina web, era de pago
-- Migre a postgreSQL para poder usar Render ya que no tomaba SQL
-- Estaba guardando las imagenes en el disco sin saber que deberia subirlo a una nube jajaja
+- MySQL tiraba errores de incompatabilidad en las claves foraneas al recrear las tablas // tuve que hacer las tablas de nuevo
+- Intente usar Railway como nube para mi pagina web, era de pago // me cambie a render 
+- Migre a postgreSQL para poder usar Render ya que no tomaba SQL // cambie de base de datos a postgre
+- Estaba guardando las imagenes en el disco sin saber que deberia subirlo a una nube /// lo resolví subiendolo a cloudinary
