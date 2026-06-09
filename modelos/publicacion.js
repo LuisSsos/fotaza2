@@ -130,6 +130,19 @@ async function obtenerEtiquetas(id_publicacion) {
     return resultado.rows;
 }
 
+async function obtenerDeSeguidores(id_usuario) {
+    const resultado = await db.query(
+        `SELECT p.*, u.nombre_usuario 
+         FROM publicaciones p 
+         JOIN usuarios u ON p.id_autor = u.id 
+         JOIN seguidores s ON p.id_autor = s.id_seguido
+         WHERE s.id_seguidor = $1 AND p.estado = 'activa'
+         ORDER BY p.fecha_publicacion DESC`,
+        [id_usuario]
+    );
+    return resultado.rows;
+}
+
 async function toggleComentarios(id) {
     await db.query(
         'UPDATE publicaciones SET comentarios_abiertos = NOT comentarios_abiertos WHERE id = $1',
@@ -137,4 +150,4 @@ async function toggleComentarios(id) {
     );
 }
 
-module.exports = { crear, obtenerTodas, obtenerPorId, agregarImagen, obtenerImagenes, buscar, cambiarEstado, bajarPublicacion, obtenerImagenPorId, eliminar, agregarEtiqueta, obtenerEtiquetas, toggleComentarios};
+module.exports = { crear, obtenerTodas, obtenerPorId, agregarImagen, obtenerImagenes, buscar, cambiarEstado, bajarPublicacion, obtenerImagenPorId, eliminar, agregarEtiqueta, obtenerEtiquetas, toggleComentarios,obtenerDeSeguidores};

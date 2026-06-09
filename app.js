@@ -75,6 +75,11 @@ app.get('/perfil/editar', verificarSesion, (req, res) => {
     res.render('editar-perfil', { usuario: req.session.usuario });
 });
 
+app.get('/siguiendo', verificarSesion, async (req, res) => {
+    const publicaciones = await publicacionModelo.obtenerDeSeguidores(req.session.usuario.id);
+    res.render('siguiendo', { publicaciones, usuario: req.session.usuario });
+});
+
 app.post('/perfil/foto', verificarSesion, subida.single('foto'), async (req, res) => {
     await usuarioModelo.actualizarFotoPerfil(req.session.usuario.id, req.file.path);
     req.session.usuario.foto_perfil = req.file.path;
