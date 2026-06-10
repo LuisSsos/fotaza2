@@ -1,7 +1,8 @@
+require('dotenv').config();
 const express = require('express');
 const session = require('express-session');
 const path = require('path');
-require('dotenv').config();
+
 
 const rutasAuth = require('./rutas/auth');
 const rutasPublicaciones = require('./rutas/publicaciones');
