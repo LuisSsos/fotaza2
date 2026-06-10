@@ -40,3 +40,4 @@ Crear un archivo `.env` basado en `.env.example`:
 - Intente usar Railway como nube para mi pagina web, era de pago // me cambie a render 
 - Migre a postgreSQL para poder usar Render ya que no tomaba SQL // cambie de base de datos a postgre
 - Estaba guardando las imagenes en el disco sin saber que deberia subirlo a una nube /// lo resolví subiendolo a cloudinary
+-habia subido al repositorio el .env y no me habia dado cuenta// tuve que cambiar todas las contraseñas: cloudinary,render,database, etc
