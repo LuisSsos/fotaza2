@@ -41,3 +41,4 @@ Crear un archivo `.env` basado en `.env.example`:
 - Migre a postgreSQL para poder usar Render ya que no tomaba SQL // cambie de base de datos a postgre
 - Estaba guardando las imagenes en el disco sin saber que deberia subirlo a una nube /// lo resolví subiendolo a cloudinary
 -habia subido al repositorio el .env y no me habia dado cuenta// tuve que cambiar todas las contraseñas: cloudinary,render,database, etc
+-cada que el usuario publicaba algo sin imagenes o titulo no se podia eliminar,denunciar, etc (bug) // lo solucione verificando que lluguen archivos antes de crear la publicación, Si no hay ninguna imagen, no crea nada y muestra el error al usuario

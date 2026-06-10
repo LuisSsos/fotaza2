@@ -15,20 +15,22 @@ router.get('/nueva', verificarSesion, (req, res) => {
 router.post('/nueva', verificarSesion, subida.array('imagenes', 10), async (req, res) => {
     const { titulo, descripcion, licencia } = req.body;
     try {
+        if (!req.files || req.files.length === 0) {
+            return res.render('nueva-publicacion', { error: 'Tenes que subir al menos una imagen', usuario: req.session.usuario });
+        }
+
         const id_publicacion = await publicacion.crear({
             id_autor: req.session.usuario.id,
             titulo,
             descripcion
         });
 
-        if (req.files && req.files.length > 0) {
-            for (const archivo of req.files) {
-                await publicacion.agregarImagen({
-                    id_publicacion,
-                    nombre_archivo: archivo.path,
-                    licencia: licencia || 'libre'
-                });
-            }
+        for (const archivo of req.files) {
+            await publicacion.agregarImagen({
+                id_publicacion,
+                nombre_archivo: archivo.path,
+                licencia: licencia || 'libre'
+            });
         }
 
         if (req.body.etiquetas) {
