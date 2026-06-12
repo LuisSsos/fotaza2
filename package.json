@@ -5,7 +5,8 @@
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
-    "db:init": "mysql -u root -p fotaza2 < fotaza2_estructura.sql",
+    "db:init": "psql $DATABASE_URL < fotaza2_postgres.sql",
+    "db:seed": "psql $DATABASE_URL < seed.sql",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

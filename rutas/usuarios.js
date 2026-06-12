@@ -28,7 +28,7 @@ router.get('/:id', verificarSesion, async (req,res) =>{
         if (!user) return res.redirect('/');
         const seguidores = await seguidor.contarSeguidores(req.params.id);
         const seguidos = await seguidor.contarSeguidos(req.params.id);
-        const estaSig = await seguidor.estaSiguiendo(req.session.usuario.id);
+        const estaSig = await seguidor.estaSiguiendo(req.session.usuario.id, req.params.id);
         res.render('perfil-usuario', { user, seguidores, seguidos, estaSig, usuarioActual: req.session.usuario})
     } catch (err){
         console.error(err);

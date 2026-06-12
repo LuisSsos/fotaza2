@@ -1,40 +1,52 @@
 const express = require('express');
 const router = express.Router();
 const publicacion = require('../modelos/publicacion');
-const {verificarSesion} = require('../middlewares/auth')
+const { verificarSesion } = require('../middlewares/auth');
 const subida = require('../config/multer');
-const comentario = require('../modelos/comentario')
+const comentario = require('../modelos/comentario');
 const valoracion = require('../modelos/valoracion');
 const notificacion = require('../modelos/notificacion');
-router.get('/nueva', verificarSesion, (req,res) => {
-    res.render('nueva-publicacion');
-})
+const etiqueta = require('../modelos/etiqueta');
 
+router.get('/nueva', verificarSesion, (req, res) => {
+    res.render('nueva-publicacion', { usuario: req.session.usuario });
+});
 
+router.post('/nueva', verificarSesion, subida.array('imagenes', 10), async (req, res) => {
+    const { titulo, descripcion, licencia } = req.body;
+    try {
+        if (!req.files || req.files.length === 0) {
+            return res.render('nueva-publicacion', { error: 'Tenes que subir al menos una imagen', usuario: req.session.usuario });
+        }
 
-router.post('/nueva', verificarSesion,subida.array('imagenes',10),async (req,res) => {
-    const { titulo, descripcion, licencia} = req.body;
-    try{
-        const id_publicacion= await publicacion.crear({
+        const id_publicacion = await publicacion.crear({
             id_autor: req.session.usuario.id,
             titulo,
             descripcion
         });
 
-        if(req.files && req.files.length > 0) {
-            for (const archivo of req.files){
-                await publicacion.agregarImagen({
-                    id_publicacion,
-                    nombre_archivo: archivo.path,
-                    licencia: licencia || 'libre'
-                });
+        for (const archivo of req.files) {
+            await publicacion.agregarImagen({
+                id_publicacion,
+                nombre_archivo: archivo.path,
+                licencia: licencia || 'libre'
+            });
+        }
+
+        if (req.body.etiquetas) {
+            const tags = req.body.etiquetas.split(',');
+            for (const tag of tags) {
+                if (tag.trim()) {
+                    const etiq = await etiqueta.buscarOCrear(tag.trim());
+                    await publicacion.agregarEtiqueta(id_publicacion, etiq.id);
+                }
             }
         }
 
         res.redirect('/');
     } catch (err) {
         console.error(err);
-        res.render('nueva-publicacion'), { error: 'Error al crear la publicacion'}
+        res.render('nueva-publicacion', { error: 'Error al crear la publicacion', usuario: req.session.usuario });
     }
 });
 
@@ -61,7 +73,6 @@ router.post('/:id/comentar', verificarSesion, async (req, res) => {
     }
 });
 
-
 router.post('/:id/imagen/:id_imagen/valorar', verificarSesion, async (req, res) => {
     try {
         const ya = await valoracion.yaValoro(req.params.id_imagen, req.session.usuario.id);
@@ -82,13 +93,37 @@ router.post('/:id/imagen/:id_imagen/valorar', verificarSesion, async (req, res) 
     }
 });
 
+router.post('/:id/eliminar', verificarSesion, async (req, res) => {
+    try {
+        const pub = await publicacion.obtenerPorId(req.params.id);
+        if (!pub || pub.id_autor !== parseInt(req.session.usuario.id)) return res.redirect('/');
+        await publicacion.eliminar(req.params.id);
+        res.redirect('/');
+    } catch (err) {
+        console.error(err);
+        res.redirect('/');
+    }
+});
 
-router.get('/:id', verificarSesion, async (req, res) => {
+router.post('/:id/comentarios/toggle', verificarSesion, async (req, res) => {
+    try {
+        const pub = await publicacion.obtenerPorId(req.params.id);
+        if (!pub || pub.id_autor !== parseInt(req.session.usuario.id)) return res.redirect('/');
+        await publicacion.toggleComentarios(req.params.id);
+        res.redirect('/publicaciones/' + req.params.id);
+    } catch (err) {
+        console.error(err);
+        res.redirect('/publicaciones/' + req.params.id);
+    }
+});
+
+router.get('/:id', async (req, res) => {
     try {
         const pub = await publicacion.obtenerPorId(req.params.id);
         if (!pub) return res.redirect('/');
         const imagenes = await publicacion.obtenerImagenes(req.params.id);
-        const comentarios = await comentario.obtenerPorPublicacion(req.params.id)
+        const comentarios = await comentario.obtenerPorPublicacion(req.params.id);
+        const etiquetas = await publicacion.obtenerEtiquetas(req.params.id);
 
         for (const img of imagenes) {
             const val = await valoracion.obtenerPromedio(img.id);
@@ -96,7 +131,7 @@ router.get('/:id', verificarSesion, async (req, res) => {
             img.total_votos = val.total;
         }
 
-        res.render('publicacion', { publicacion: pub, imagenes, comentarios, usuario: req.session.usuario });
+        res.render('publicacion', { publicacion: pub, imagenes, comentarios, etiquetas, usuario: req.session.usuario || null });
     } catch (err) {
         console.error(err);
         res.redirect('/');

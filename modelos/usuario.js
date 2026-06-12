@@ -17,5 +17,11 @@ async function crear(datos) {
     );
     return resultado.rows[0].id;
 }
+async function actualizarFotoPerfil(id, url) {
+    await db.query(
+        'UPDATE usuarios SET foto_perfil = $1 WHERE id = $2',
+        [url, id]
+    );
+}
 
-module.exports = { buscarPorCorreo, buscarPorId, crear };
+module.exports = { buscarPorCorreo, buscarPorId, crear, actualizarFotoPerfil};

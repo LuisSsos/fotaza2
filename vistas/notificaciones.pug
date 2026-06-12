@@ -1,24 +1,31 @@
 extends layout
 
 block contenido
-  h2 Notificaciones
-  br
+  h2.mb-4(style="color: var(--hl-orange); text-shadow: 0 0 8px var(--hl-orange-glow);") NOTIFICACIONES
+  
   if notificaciones.length === 0
-    p No tenes notificaciones
+    p(style="color: rgba(245, 124, 0, 0.7);") No tenes notificaciones
+    
   each noti in notificaciones
-    .card.mb-2
-      .card-body
-        p
-          strong #{noti.actor}
+    .card.hl-card.mb-2
+      .card-body.hl-card-body
+        p.text-light
+          strong.text-warning #{noti.actor}
           if noti.tipo === 'comentario'
             |  comento tu publicacion
           else if noti.tipo === 'valoracion'
             |  valoro tu imagen
+          else if noti.tipo === 'interes'
+            |  esta interesado en tu imagen
           else if noti.tipo === 'nuevo_seguidor'
             |  te empezo a seguir
         small.text-muted #{noti.fecha}
+        if noti.tipo === 'interes'
+          br
+          a.btn-hl-small.mt-2(href='/intereses/conversaciones') Ver mensajes
         if !noti.leida
           form.d-inline.ms-3(method='POST' action='/notificaciones/' + noti.id + '/leida')
-            button.btn.btn-sm.btn-outline-secondary(type='submit') Marcar leida
+            button.btn-hl-small(type='submit') Marcar leida
+            
   br
-  a(href='/') Volver
+  a.btn-hl-small(href='/') Volver
