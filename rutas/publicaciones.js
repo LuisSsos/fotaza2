@@ -15,6 +15,7 @@ router.get('/nueva', verificarSesion, (req, res) => {
 
 router.post('/nueva', verificarSesion, subida.array('imagenes', 10), async (req, res) => {
     const { titulo, descripcion, licencia } = req.body;
+    const marca = licencia === 'copyright' ? (req.body.marca_agua || '').replace(/[^\p{L}\p{N} ]/gu, '').trim().slice(0, 40) : '';
     try {
         if (!req.files || req.files.length === 0) {
             return res.render('nueva-publicacion', { error: 'Tenes que subir al menos una imagen', usuario: req.session.usuario });
@@ -30,7 +31,8 @@ router.post('/nueva', verificarSesion, subida.array('imagenes', 10), async (req,
             await publicacion.agregarImagen({
                 id_publicacion,
                 nombre_archivo: archivo.path,
-                licencia: licencia || 'libre'
+                licencia: licencia || 'libre',
+                marca_agua: marca || null
             });
         }
 
@@ -54,6 +56,7 @@ router.post('/nueva', verificarSesion, subida.array('imagenes', 10), async (req,
 router.post('/:id/comentar', verificarSesion, async (req, res) => {
     try {
         const pub = await publicacion.obtenerPorId(req.params.id);
+        if (!pub || !pub.comentarios_abiertos) return res.redirect('/publicaciones/' + req.params.id);
         await comentario.crear({
             id_publicacion: req.params.id,
             id_autor: req.session.usuario.id,
@@ -87,7 +90,7 @@ router.post('/:id/imagen/:id_imagen/valorar', verificarSesion, async (req, res) 
             id_usuario: req.session.usuario.id,
             valor: req.body.valor
         });
-                await notificacion.crear({
+        await notificacion.crear({
             id_destinatario: pub.id_autor,
             id_actor: req.session.usuario.id,
             tipo: 'valoracion',
@@ -144,7 +147,7 @@ router.get('/:id', async (req, res) => {
     try {
         const pub = await publicacion.obtenerPorId(req.params.id);
         if (!pub) return res.redirect('/');
-                let imagenes = await publicacion.obtenerImagenes(req.params.id);
+        let imagenes = await publicacion.obtenerImagenes(req.params.id);
         if (!req.session.usuario) {
             imagenes = imagenes.filter(img => img.licencia === 'libre');
             if (imagenes.length === 0) return res.redirect('/auth/login');
@@ -153,13 +156,17 @@ router.get('/:id', async (req, res) => {
         const etiquetas = await publicacion.obtenerEtiquetas(req.params.id);
         let denunciasComentarios = [];
         if (req.session.usuario && req.session.usuario.id == pub.id_autor) {
-        denunciasComentarios = await denuncia.obtenerDenunciasComentarios(req.params.id);
+            denunciasComentarios = await denuncia.obtenerDenunciasComentarios(req.params.id);
         }
 
         for (const img of imagenes) {
             const val = await valoracion.obtenerPromedio(img.id);
             img.promedio = val.promedio ? parseFloat(val.promedio).toFixed(1) : 'Sin valoraciones';
             img.total_votos = val.total;
+            if (img.licencia === 'copyright') {
+            const texto = encodeURIComponent(img.marca_agua || pub.nombre_usuario);
+            img.nombre_archivo = img.nombre_archivo.replace('/upload/', `/upload/c_limit,w_800/co_white,o_70,l_text:Arial_40_bold:${texto}/fl_layer_apply,g_south_east,x_15,y_15/`);
+            }
         }
 
         res.render('publicacion', { publicacion: pub, imagenes, comentarios, etiquetas, denunciasComentarios, usuario: req.session.usuario || null });

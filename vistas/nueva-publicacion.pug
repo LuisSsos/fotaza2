@@ -22,6 +22,9 @@ block contenido
           option(value='libre') Sin copyright
           option(value='copyright') Con copyright
         br
+        label.text-light Texto de la marca de agua (solo con copyright; si lo dejás vacío se usa tu usuario)
+        input.form-control.bg-dark.text-light.border-secondary(type='text' name='marca_agua' maxlength='40' placeholder='Texto que va sobre la imagen')
+        br
         button.btn-hl-small(type='submit') Publicar
   br
   a.btn-hl-small(href='/') Volver

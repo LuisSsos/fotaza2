@@ -43,8 +43,8 @@ async function obtenerPorId(id) {
 
 async function agregarImagen(datos) {
     const resultado = await db.query(
-        'INSERT INTO imagenes (id_publicacion, nombre_archivo, licencia) VALUES ($1, $2, $3) RETURNING id',
-        [datos.id_publicacion, datos.nombre_archivo, datos.licencia]
+        'INSERT INTO imagenes (id_publicacion, nombre_archivo, licencia, marca_agua) VALUES ($1, $2, $3, $4) RETURNING id',
+        [datos.id_publicacion, datos.nombre_archivo, datos.licencia, datos.marca_agua]
     );
     return resultado.rows[0].id;
 }
