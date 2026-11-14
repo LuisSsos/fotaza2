@@ -165,7 +165,7 @@ router.get('/:id', async (req, res) => {
             img.total_votos = val.total;
             if (img.licencia === 'copyright') {
             const texto = encodeURIComponent(img.marca_agua || pub.nombre_usuario);
-            img.nombre_archivo = img.nombre_archivo.replace('/upload/', `/upload/c_limit,w_800/co_white,o_70,l_text:Arial_40_bold:${texto}/fl_layer_apply,g_south_east,x_15,y_15/`);
+            img.nombre_archivo = img.nombre_archivo.replace('/upload/', `/upload/c_limit,w_800/co_white,b_black,o_60,l_text:Arial_40_bold:${texto}/fl_layer_apply,g_south_east,x_15,y_15/`);
             }
         }
 
