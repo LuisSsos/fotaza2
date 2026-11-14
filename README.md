@@ -22,14 +22,17 @@ La app queda disponible en http://localhost:3000
 
 ## Variables de entorno
 
-Crear un archivo .env basado en .env.example
+Crear un archivo .env basado en .env.example y completar:
+
+- PORT: 
+- SESSION_SECRET: 
+- DATABASE_URL: 
+- CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET: 
 
 ## Usuarios de prueba
 
 - admin / admin@fotaza2.com / contraseña: admin1234 / rol: admin
 - validador / validador@fotaza2.com / contraseña: validador1234 / rol: validador
-- hola / hola123@gmail.com / contraseña: hola / rol: comun
-- toto / toto123@gmail.com / contraseña: toto / rol: comun
 
 ## Problemas encontrados
 

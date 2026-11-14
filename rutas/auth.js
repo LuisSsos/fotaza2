@@ -42,6 +42,9 @@ router.post('/login', async (req,res) =>{
         if(!ok){
             return res.render ('login', {error: ' Correo o contrasena incorrectos'});
         }
+                if (!user.activo) {
+            return res.render('login', { error: 'Tu cuenta esta inactiva'});
+        }
         req.session.usuario = { id: user.id, nombre_usuario: user.nombre_usuario, rol: user.rol};
         req.session.save(() => {
         res.redirect('/');
