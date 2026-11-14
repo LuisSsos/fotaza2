@@ -44,4 +44,27 @@ async function obtenerMotivos() {
     return resultado.rows;
 }
 
-module.exports = { denunciarImagen, contarDenunciasImagen, obtenerDenunciasPublicacion, obtenerPublicacionesEnRevision, obtenerMotivos };
+async function denunciarComentario(datos) {
+    await db.query(
+        'INSERT INTO denuncias_comentarios (id_comentario, id_usuario, id_motivo, justificacion) VALUES ($1, $2, $3, $4)',
+        [datos.id_comentario, datos.id_usuario, datos.id_motivo, datos.justificacion]
+    );
+}
+
+async function obtenerDenunciasComentarios(id_publicacion) {
+    const resultado = await db.query(
+        `SELECT dc.*, c.contenido, uc.nombre_usuario AS autor_comentario,
+                ud.nombre_usuario AS denunciante, m.descripcion AS motivo
+         FROM denuncias_comentarios dc
+         JOIN comentarios c ON dc.id_comentario = c.id
+         JOIN usuarios uc ON c.id_autor = uc.id
+         JOIN usuarios ud ON dc.id_usuario = ud.id
+         JOIN motivos_denuncia m ON dc.id_motivo = m.id
+         WHERE c.id_publicacion = $1 AND c.eliminado = false
+         ORDER BY dc.fecha DESC`,
+        [id_publicacion]
+    );
+    return resultado.rows;
+}
+
+module.exports = { denunciarImagen, contarDenunciasImagen, obtenerDenunciasPublicacion, obtenerPublicacionesEnRevision, obtenerMotivos, denunciarComentario, obtenerDenunciasComentarios };

@@ -9,7 +9,9 @@ async function crear(datos) {
 }
 
 async function obtenerTodas(soloPublicas = false) {
-    let query = `SELECT p.*, u.nombre_usuario 
+    let query = `SELECT p.*, u.nombre_usuario,
+         (SELECT AVG(v.valor) FROM valoraciones v JOIN imagenes i ON v.id_imagen = i.id WHERE i.id_publicacion = p.id) AS promedio,
+         (SELECT COUNT(*) FROM valoraciones v JOIN imagenes i ON v.id_imagen = i.id WHERE i.id_publicacion = p.id) AS votos
          FROM publicaciones p 
          JOIN usuarios u ON p.id_autor = u.id 
          WHERE p.estado = 'activa'`;
@@ -55,18 +57,28 @@ async function obtenerImagenes(id_publicacion) {
     return resultado.rows;
 }
 
-async function buscar(termino) {
-    const resultado = await db.query(
-        `SELECT DISTINCT p.*, u.nombre_usuario 
-         FROM publicaciones p 
-         JOIN usuarios u ON p.id_autor = u.id 
-         LEFT JOIN publicaciones_etiquetas pe ON p.id = pe.id_publicacion
-         LEFT JOIN etiquetas e ON pe.id_etiqueta = e.id
-         WHERE p.estado = 'activa' 
-         AND (p.titulo ILIKE $1 OR p.descripcion ILIKE $2 OR e.nombre ILIKE $3)
-         ORDER BY p.fecha_publicacion DESC`,
-        [`%${termino}%`, `%${termino}%`, `%${termino}%`]
-    );
+async function buscar(filtros) {
+    let query = `SELECT p.*, u.nombre_usuario
+         FROM publicaciones p
+         JOIN usuarios u ON p.id_autor = u.id
+         WHERE p.estado = 'activa'`;
+    const valores = [];
+
+    if (filtros.q) {
+        valores.push(`%${filtros.q}%`);
+        query += ` AND (p.titulo ILIKE $${valores.length} OR p.descripcion ILIKE $${valores.length})`;
+    }
+    if (filtros.etiqueta) {
+        valores.push(`%${filtros.etiqueta}%`);
+        query += ` AND EXISTS (SELECT 1 FROM publicaciones_etiquetas pe JOIN etiquetas e ON pe.id_etiqueta = e.id WHERE pe.id_publicacion = p.id AND e.nombre ILIKE $${valores.length})`;
+    }
+    if (filtros.licencia) {
+        valores.push(filtros.licencia);
+        query += ` AND EXISTS (SELECT 1 FROM imagenes i WHERE i.id_publicacion = p.id AND i.licencia = $${valores.length})`;
+    }
+
+    query += ` ORDER BY p.fecha_publicacion DESC`;
+    const resultado = await db.query(query, valores);
     return resultado.rows;
 }
 

@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const denuncia = require('../modelos/denuncia');
 const publicacion = require('../modelos/publicacion');
+const comentario = require('../modelos/comentario');
 const { verificarSesion } = require('../middlewares/auth');
 
 router.get('/imagen/:id_imagen', verificarSesion, async (req, res) => {
@@ -24,13 +25,39 @@ router.post('/imagen/:id_imagen', verificarSesion, async (req, res) => {
             justificacion
         });
         const total = await denuncia.contarDenunciasImagen(req.params.id_imagen);
-        if (total >= 3) {
+        if (total > 3) {
             await publicacion.cambiarEstado(id_publicacion, 'en_revision');
         }
         res.redirect('/publicaciones/' + id_publicacion);
     } catch (err) {
         console.error(err);
         res.redirect('/');
+    }
+});
+
+router.get('/comentario/:id_comentario', verificarSesion, async (req, res) => {
+    try {
+        const motivos = await denuncia.obtenerMotivos();
+        res.render('denunciar-comentario', { motivos, id_comentario: req.params.id_comentario, id_publicacion: req.query.id_publicacion });
+    } catch (err) {
+        console.error(err);
+        res.redirect('/');
+    }
+});
+
+router.post('/comentario/:id_comentario', verificarSesion, async (req, res) => {
+    const { id_motivo, justificacion, id_publicacion } = req.body;
+    try {
+        const com = await comentario.obtenerPorId(req.params.id_comentario);
+        const pub = await publicacion.obtenerPorId(id_publicacion);
+        const yo = parseInt(req.session.usuario.id);
+        if (!com || !pub || com.eliminado || com.id_publicacion !== pub.id) return res.redirect('/');
+        if (com.id_autor === yo || com.id_autor === pub.id_autor) return res.redirect('/publicaciones/' + id_publicacion);
+        await denuncia.denunciarComentario({ id_comentario: com.id, id_usuario: yo, id_motivo, justificacion });
+        res.redirect('/publicaciones/' + id_publicacion);
+    } catch (err) {
+        console.error(err);
+        res.redirect('/publicaciones/' + id_publicacion);
     }
 });
 

@@ -7,6 +7,7 @@ const comentario = require('../modelos/comentario');
 const valoracion = require('../modelos/valoracion');
 const notificacion = require('../modelos/notificacion');
 const etiqueta = require('../modelos/etiqueta');
+const denuncia = require('../modelos/denuncia');
 
 router.get('/nueva', verificarSesion, (req, res) => {
     res.render('nueva-publicacion', { usuario: req.session.usuario });
@@ -86,6 +87,12 @@ router.post('/:id/imagen/:id_imagen/valorar', verificarSesion, async (req, res) 
             id_usuario: req.session.usuario.id,
             valor: req.body.valor
         });
+                await notificacion.crear({
+            id_destinatario: pub.id_autor,
+            id_actor: req.session.usuario.id,
+            tipo: 'valoracion',
+            id_publicacion: req.params.id
+        });
         res.redirect('/publicaciones/' + req.params.id);
     } catch (err) {
         console.error(err);
@@ -97,6 +104,8 @@ router.post('/:id/eliminar', verificarSesion, async (req, res) => {
     try {
         const pub = await publicacion.obtenerPorId(req.params.id);
         if (!pub || pub.id_autor !== parseInt(req.session.usuario.id)) return res.redirect('/');
+        const denuncias = await denuncia.obtenerDenunciasPublicacion(req.params.id);
+        if (denuncias.length > 0) return res.redirect('/publicaciones/' + req.params.id);
         await publicacion.eliminar(req.params.id);
         res.redirect('/');
     } catch (err) {
@@ -117,13 +126,35 @@ router.post('/:id/comentarios/toggle', verificarSesion, async (req, res) => {
     }
 });
 
+router.post('/:id/comentarios/:id_comentario/eliminar', verificarSesion, async (req, res) => {
+    try {
+        const pub = await publicacion.obtenerPorId(req.params.id);
+        if (!pub || pub.id_autor !== parseInt(req.session.usuario.id)) return res.redirect('/');
+        const com = await comentario.obtenerPorId(req.params.id_comentario);
+        if (!com || com.id_publicacion !== pub.id) return res.redirect('/');
+        await comentario.eliminar(com.id);
+        res.redirect('/publicaciones/' + req.params.id);
+    } catch (err) {
+        console.error(err);
+        res.redirect('/publicaciones/' + req.params.id);
+    }
+});
+
 router.get('/:id', async (req, res) => {
     try {
         const pub = await publicacion.obtenerPorId(req.params.id);
         if (!pub) return res.redirect('/');
-        const imagenes = await publicacion.obtenerImagenes(req.params.id);
+                let imagenes = await publicacion.obtenerImagenes(req.params.id);
+        if (!req.session.usuario) {
+            imagenes = imagenes.filter(img => img.licencia === 'libre');
+            if (imagenes.length === 0) return res.redirect('/auth/login');
+        }
         const comentarios = await comentario.obtenerPorPublicacion(req.params.id);
         const etiquetas = await publicacion.obtenerEtiquetas(req.params.id);
+        let denunciasComentarios = [];
+        if (req.session.usuario && req.session.usuario.id == pub.id_autor) {
+        denunciasComentarios = await denuncia.obtenerDenunciasComentarios(req.params.id);
+        }
 
         for (const img of imagenes) {
             const val = await valoracion.obtenerPromedio(img.id);
@@ -131,7 +162,7 @@ router.get('/:id', async (req, res) => {
             img.total_votos = val.total;
         }
 
-        res.render('publicacion', { publicacion: pub, imagenes, comentarios, etiquetas, usuario: req.session.usuario || null });
+        res.render('publicacion', { publicacion: pub, imagenes, comentarios, etiquetas, denunciasComentarios, usuario: req.session.usuario || null });
     } catch (err) {
         console.error(err);
         res.redirect('/');

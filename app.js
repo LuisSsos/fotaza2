@@ -63,7 +63,18 @@ app.use('/colecciones', rutasColecciones);
 
 app.get('/', async (req, res) => {
     const soloPublicas = !req.session.usuario;
-    const publicaciones = await publicacionModelo.obtenerTodas(soloPublicas);
+    const todas = await publicacionModelo.obtenerTodas(soloPublicas);
+
+    const destacadas = todas.filter(p => Number(p.promedio) >= 4 && Number(p.votos) >= 3);
+    const otras = todas.filter(p => !(Number(p.promedio) >= 4 && Number(p.votos) >= 3));
+    destacadas.sort((a, b) => b.promedio - a.promedio);
+
+    const publicaciones = [];
+    while (destacadas.length > 0 || otras.length > 0) {
+        if (destacadas.length > 0) publicaciones.push(destacadas.shift());
+        if (otras.length > 0) publicaciones.push(otras.shift());
+    }
+
     res.render('home', { usuario: req.session.usuario || null, publicaciones });
 });
 
@@ -98,12 +109,17 @@ app.post('/notificaciones/:id/leida', verificarSesion, async (req, res) => {
 });
 
 app.get('/buscar', verificarSesion, async (req, res) => {
-    const termino = req.query.q || '';
-    const resultados = termino ? await publicacionModelo.buscar(termino) : [];
-    res.render('buscar', { resultados, termino });
+    const filtros = {
+        q: (req.query.q || '').trim(),
+        etiqueta: (req.query.etiqueta || '').trim(),
+        licencia: req.query.licencia || ''
+    };
+    const hayFiltros = Object.values(filtros).some(v => v !== '');
+    const resultados = hayFiltros ? await publicacionModelo.buscar(filtros) : [];
+    res.render('buscar', { resultados, filtros, hayFiltros });
 });
 
-const PUERTO = process.env.PUERTO || 3000;
+const PUERTO = process.env.PORT || 3000;
 app.listen(PUERTO, () => {
     console.log(`Servidor andando en http://localhost:${PUERTO}`);
 });
