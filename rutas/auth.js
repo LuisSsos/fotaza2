@@ -17,6 +17,12 @@ router.post('/registro',async (req,res) =>{
         if(existe){
             return res.render('registro', {error: 'El correo ya esta registrado'});
         }
+        const repetido = await usuario.buscarPorNombre(nombre_usuario);
+        if(repetido){
+        return res.render('registro', {error: 'El nombre de usuario ya esta en uso'});
+        }
+        
+        //la contrasena se guarda cifrada,
         const hash = await bcrypt.hash(contrasena,10);
         await usuario.crear ({ nombre_usuario, correo, contrasena: hash});
         res.redirect('/auth/login');
@@ -41,6 +47,9 @@ router.post('/login', async (req,res) =>{
         const ok = await bcrypt.compare(contrasena, user.contrasena);
         if(!ok){
             return res.render ('login', {error: ' Correo o contrasena incorrectos'});
+        }
+                if (!user.activo) {
+            return res.render('login', { error: 'Tu cuenta esta inactiva'});
         }
         req.session.usuario = { id: user.id, nombre_usuario: user.nombre_usuario, rol: user.rol};
         req.session.save(() => {

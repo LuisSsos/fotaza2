@@ -20,4 +20,13 @@ async function obtenerPorPublicacion(id_publicacion) {
     return resultado.rows;
 }
 
-module.exports = { crear, obtenerPorPublicacion };
+async function obtenerPorId(id) {
+    const resultado = await db.query('SELECT * FROM comentarios WHERE id = $1', [id]);
+    return resultado.rows[0];
+}
+
+async function eliminar(id) {
+    await db.query('UPDATE comentarios SET eliminado = true WHERE id = $1', [id]);
+}
+
+module.exports = { crear, obtenerPorPublicacion, obtenerPorId, eliminar };

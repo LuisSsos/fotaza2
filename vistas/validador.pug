@@ -1,0 +1,17 @@
+extends layout
+
+block contenido
+  h2.text-warning Panel del validador
+  br
+  if publicaciones.length === 0
+    p.text-light No hay publicaciones en revision
+  each pub in publicaciones
+    .card.hl-card.mb-3
+      .card-body.hl-card-body
+        h5.text-warning #{pub.titulo}
+        p.text-light por #{pub.nombre_usuario}
+        .d-flex.gap-2
+          form(method='POST' action='/denuncias/validador/' + pub.id + '/bajar')
+            button.btn-hl-danger(type='submit') Dar de baja
+          form(method='POST' action='/denuncias/validador/' + pub.id + '/desestimar')
+            button.btn-hl-small(type='submit') Desestimar denuncias

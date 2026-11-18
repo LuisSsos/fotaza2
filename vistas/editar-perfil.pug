@@ -1,0 +1,13 @@
+extends layout
+
+block contenido
+  .card.hl-card.w-50
+    .card-body.hl-card-body
+      h2.text-warning Editar perfil
+      br
+      form(method='POST' action='/perfil/foto' enctype='multipart/form-data')
+        input.form-control.bg-dark.text-light.border-secondary(type='file' name='foto' accept='image/*')
+        br
+        button.btn-hl-small(type='submit') Guardar foto
+      br
+      a.btn-hl-small(href='/perfil') Volver

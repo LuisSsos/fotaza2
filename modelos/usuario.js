@@ -5,6 +5,11 @@ async function buscarPorCorreo(correo) {
     return resultado.rows[0]; 
 }
 
+async function buscarPorNombre(nombre) {
+    const resultado = await db.query('SELECT * FROM usuarios WHERE nombre_usuario = $1', [nombre]);
+    return resultado.rows[0];
+}
+
 async function buscarPorId(id) {
     const resultado = await db.query('SELECT * FROM usuarios WHERE id = $1', [id]);
     return resultado.rows[0];
@@ -17,5 +22,11 @@ async function crear(datos) {
     );
     return resultado.rows[0].id;
 }
+async function actualizarFotoPerfil(id, url) {
+    await db.query(
+        'UPDATE usuarios SET foto_perfil = $1 WHERE id = $2',
+        [url, id]
+    );
+}
 
-module.exports = { buscarPorCorreo, buscarPorId, crear };
+module.exports = { buscarPorCorreo, buscarPorNombre, buscarPorId, crear, actualizarFotoPerfil};

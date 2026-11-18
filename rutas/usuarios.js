@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const seguidor = require('../modelos/seguidor');
+const notificacion = require('../modelos/notificacion');
 const { verificarSesion } = require('../middlewares/auth');
 
 router.post('/:id/seguir', verificarSesion, async (req,res) => {
@@ -13,6 +14,12 @@ router.post('/:id/seguir', verificarSesion, async (req,res) => {
             await seguidor.dejarDeSeguir(id_seguidor,id_seguido);
         } else {
             await seguidor.seguir(id_seguidor, id_seguido);
+                await notificacion.crear({
+                id_destinatario: id_seguido,
+                id_actor: id_seguidor,
+                tipo: 'nuevo_seguidor',
+                id_publicacion: null
+            });
         }
         res.redirect('/usuarios/' + id_seguido);
     }catch (err){
@@ -28,7 +35,7 @@ router.get('/:id', verificarSesion, async (req,res) =>{
         if (!user) return res.redirect('/');
         const seguidores = await seguidor.contarSeguidores(req.params.id);
         const seguidos = await seguidor.contarSeguidos(req.params.id);
-        const estaSig = await seguidor.estaSiguiendo(req.session.usuario.id);
+        const estaSig = await seguidor.estaSiguiendo(req.session.usuario.id, req.params.id);
         res.render('perfil-usuario', { user, seguidores, seguidos, estaSig, usuarioActual: req.session.usuario})
     } catch (err){
         console.error(err);
