@@ -24,6 +24,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'publico')));
 
+// guarda en la sesion quien esta logueado
 app.use(session({
     secret: process.env.SESSION_SECRET || 'secreto123',
     resave: false,
@@ -37,6 +38,11 @@ const { verificarSesion } = require('./middlewares/auth');
 app.use(async (req, res, next) => {
     if (req.session && req.session.usuario) {
         try {
+            // si lo dieron de baja mientras estaba logueado, cierra la sesion
+            const user = await usuarioModelo.buscarPorId(req.session.usuario.id);
+            if (!user || !user.activo) {
+                return req.session.destroy(() => res.redirect('/auth/login'));
+            }
             const noLeidas = await notificacionModelo.contarNoLeidas(req.session.usuario.id);
             res.locals.noLeidas = noLeidas;
         } catch (error) {
@@ -61,6 +67,7 @@ app.use('/denuncias', rutasDenuncias);
 app.use('/intereses', rutasIntereses);
 app.use('/colecciones', rutasColecciones);
 
+//las mas valoradas  (3 votos o mas) se alternan con las demas
 app.get('/', async (req, res) => {
     const soloPublicas = !req.session.usuario;
     const todas = await publicacionModelo.obtenerTodas(soloPublicas);
@@ -108,6 +115,7 @@ app.post('/notificaciones/:id/leida', verificarSesion, async (req, res) => {
     res.redirect('/notificaciones');
 });
 
+// buscador
 app.get('/buscar', verificarSesion, async (req, res) => {
     const filtros = {
         q: (req.query.q || '').trim(),
