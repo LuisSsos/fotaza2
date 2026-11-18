@@ -17,6 +17,23 @@ router.get('/seleccionar', verificarSesion, async (req, res) => {
 router.post('/seleccionar', verificarSesion, async (req, res) => {
     try {
         const { id_coleccion, id_publicacion } = req.body;
+        const col = await coleccion.obtenerPorId(id_coleccion);
+        if (!col || col.id_usuario !== parseInt(req.session.usuario.id)) return res.redirect('/');
+        await coleccion.agregarPublicacion(id_coleccion, id_publicacion);
+        res.redirect('/publicaciones/' + id_publicacion);
+    } catch (err) {
+        console.error(err);
+        res.redirect('/');
+    }
+});
+
+router.post('/favorito', verificarSesion, async (req, res) => {
+    try {
+        const id_usuario = req.session.usuario.id;
+        const { id_publicacion } = req.body;
+        const colecciones = await coleccion.obtenerPorUsuario(id_usuario);
+        const fav = colecciones.find(c => c.nombre === 'Favoritos');
+        const id_coleccion = fav ? fav.id : await coleccion.crear(id_usuario, 'Favoritos');
         await coleccion.agregarPublicacion(id_coleccion, id_publicacion);
         res.redirect('/publicaciones/' + id_publicacion);
     } catch (err) {
