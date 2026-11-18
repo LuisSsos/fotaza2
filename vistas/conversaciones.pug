@@ -11,7 +11,7 @@ block contenido
         p.text-light Publicacion: 
           strong.text-warning #{conv.titulo}
         p.text-light Usuario: 
-          strong.text-warning #{conv.interesado}
+          a.text-warning(href='/usuarios/' + conv.id_usuario) #{conv.interesado}
         a.btn-hl-small(href='/intereses/chat/' + conv.id) Abrir conversacion
   br
   a.btn-hl-small(href='/') Volver
