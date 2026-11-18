@@ -57,6 +57,7 @@ async function obtenerImagenes(id_publicacion) {
     return resultado.rows;
 }
 
+// suma una condicion a la consulta por cada filtro que viene completo
 async function buscar(filtros) {
     let query = `SELECT p.*, u.nombre_usuario
          FROM publicaciones p
