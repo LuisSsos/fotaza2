@@ -17,6 +17,12 @@ router.post('/registro',async (req,res) =>{
         if(existe){
             return res.render('registro', {error: 'El correo ya esta registrado'});
         }
+        const repetido = await usuario.buscarPorNombre(nombre_usuario);
+        if(repetido){
+        return res.render('registro', {error: 'El nombre de usuario ya esta en uso'});
+        }
+        
+        //la contrasena se guarda cifrada,
         const hash = await bcrypt.hash(contrasena,10);
         await usuario.crear ({ nombre_usuario, correo, contrasena: hash});
         res.redirect('/auth/login');
