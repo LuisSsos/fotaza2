@@ -12,7 +12,7 @@ block contenido
             each motivo in motivos
               option(value=motivo.id) #{motivo.descripcion}
         .mb-3
-          textarea.form-control.bg-dark.text-light.border-secondary(name='justificacion' placeholder='Justificacion' rows='3')
+          textarea.form-control.bg-dark.text-light.border-secondary(name='justificacion' placeholder='Justificacion' rows='3' required)
         button.btn-hl-small(type='submit') Denunciar
       br
       a.btn-hl-small(href='/') Volver

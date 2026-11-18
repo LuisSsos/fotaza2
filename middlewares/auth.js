@@ -1,9 +1,11 @@
+
 function verificarSesion(req, res, next) {
     if (!req.session || !req.session.usuario) {
         return res.redirect('/auth/login');
     }
     next();
 }
+
 
 function soloInvitados (req,res,next){
     if (req.session.usuario){
@@ -12,10 +14,11 @@ function soloInvitados (req,res,next){
     next();
 }
 
-function sesionOpcional(req, res, next) {
+
+function soloValidador(req, res, next) {
+    const rol = req.session.usuario.rol;
+    if (rol !== 'validador' && rol !== 'admin') return res.redirect('/');
     next();
 }
 
-module.exports = { verificarSesion, soloInvitados, sesionOpcional };
-
-module.exports = { verificarSesion, soloInvitados};
+module.exports = { verificarSesion, soloInvitados, soloValidador };

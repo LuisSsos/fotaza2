@@ -3,7 +3,7 @@ const router = express.Router();
 const denuncia = require('../modelos/denuncia');
 const publicacion = require('../modelos/publicacion');
 const comentario = require('../modelos/comentario');
-const { verificarSesion } = require('../middlewares/auth');
+const { verificarSesion, soloValidador } = require('../middlewares/auth');
 
 router.get('/imagen/:id_imagen', verificarSesion, async (req, res) => {
     try {
@@ -17,7 +17,13 @@ router.get('/imagen/:id_imagen', verificarSesion, async (req, res) => {
 
 router.post('/imagen/:id_imagen', verificarSesion, async (req, res) => {
     try {
-        const { id_motivo, justificacion, id_publicacion } = req.body;
+        const { id_motivo, justificacion } = req.body;
+        const img = await publicacion.obtenerImagenPorId(req.params.id_imagen);
+
+        // no se puede denunciar la imagen propia
+        if (!img || img.id_autor === parseInt(req.session.usuario.id)) return res.redirect('/');
+        const id_publicacion = img.id_publicacion;
+        if (!justificacion || !justificacion.trim()) return res.redirect('/denuncias/imagen/' + req.params.id_imagen + '?id_publicacion=' + id_publicacion);
         await denuncia.denunciarImagen({
             id_imagen: req.params.id_imagen,
             id_usuario: req.session.usuario.id,
@@ -25,6 +31,7 @@ router.post('/imagen/:id_imagen', verificarSesion, async (req, res) => {
             justificacion
         });
         const total = await denuncia.contarDenunciasImagen(req.params.id_imagen);
+        // con mas de 3 denuncias la publicacion pasa a revision del validador
         if (total > 3) {
             await publicacion.cambiarEstado(id_publicacion, 'en_revision');
         }
@@ -61,11 +68,8 @@ router.post('/comentario/:id_comentario', verificarSesion, async (req, res) => {
     }
 });
 
-router.get('/validador', verificarSesion, async (req, res) => {
+router.get('/validador', verificarSesion, soloValidador, async (req, res) => {
     try {
-        if (req.session.usuario.rol !== 'validador' && req.session.usuario.rol !== 'admin') {
-            return res.redirect('/');
-        }
         const publicaciones = await denuncia.obtenerPublicacionesEnRevision();
         res.render('validador', { publicaciones, usuario: req.session.usuario });
     } catch (err) {
@@ -74,11 +78,8 @@ router.get('/validador', verificarSesion, async (req, res) => {
     }
 });
 
-router.post('/validador/:id_publicacion/bajar', verificarSesion, async (req, res) => {
+router.post('/validador/:id_publicacion/bajar', verificarSesion, soloValidador, async (req, res) => {
     try {
-        if (req.session.usuario.rol !== 'validador' && req.session.usuario.rol !== 'admin') {
-            return res.redirect('/');
-        }
         await publicacion.bajarPublicacion(req.params.id_publicacion);
         res.redirect('/denuncias/validador');
     } catch (err) {
@@ -87,11 +88,8 @@ router.post('/validador/:id_publicacion/bajar', verificarSesion, async (req, res
     }
 });
 
-router.post('/validador/:id_publicacion/desestimar', verificarSesion, async (req, res) => {
+router.post('/validador/:id_publicacion/desestimar', verificarSesion, soloValidador, async (req, res) => {
     try {
-        if (req.session.usuario.rol !== 'validador' && req.session.usuario.rol !== 'admin') {
-            return res.redirect('/');
-        }
         await publicacion.cambiarEstado(req.params.id_publicacion, 'activa');
         res.redirect('/denuncias/validador');
     } catch (err) {
